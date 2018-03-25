@@ -19,3 +19,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+webdriver-test/__pycache__
+webdriver-test/.pytest_cache
+*.sql

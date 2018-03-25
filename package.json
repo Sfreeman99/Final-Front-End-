@@ -5,12 +5,18 @@
   "dependencies": {
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-scripts": "1.1.1"
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.1.1",
+    "selenium": "^2.20.0",
+    "selenium-webdriver": "^4.0.0-alpha.1",
+    "sfcookies": "^1.0.2",
+    "webdriverio": "^4.12.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "functional-test": "(cd webdriver-test && pipenv run pytest test.py)"
   }
 }
