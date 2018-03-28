@@ -49,7 +49,7 @@ class Login extends Component {
       })
     })
       .then(response => {
-        return response.json();
+        return response.text();
       })
       .then(key => {
         bake_cookie("CUser", key);
