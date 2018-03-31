@@ -2,19 +2,31 @@ import React, { Component } from "react";
 import { bake_cookie, read_cookie } from "sfcookies";
 import { getToken } from "./CookieInformation";
 import { Redirect } from "react-router-dom";
+import { isBoolean } from "util";
+
+const UsernameTaken = username => {
+  return fetch("http://localhost:8080/usernameexists", {
+    method: "post",
+    mode: "cors",
+    body: username
+  })
+    .then(response => {
+      // returns a response which is a boolean
+      return response.json();
+    })
+    .then(boolean => {
+      return boolean;
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
 
 const passwordsMatch = (password1, password2) => {
   if (password1 !== password2) {
     return false;
   }
   return true;
-};
-const isInvalid = bool => {
-  if (bool) {
-    return "is-invalid";
-  } else {
-    return "";
-  }
 };
 const passwordMustBeAtLeast10Char = password1 => {
   if (password1.length < 10) {
@@ -29,188 +41,253 @@ class Signup extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      redirect: false,
       email: "",
       first_name: "",
       last_name: "",
       username: "",
       password1: "",
       password2: "",
-      passworderrors: []
+      errors: {
+        has_error: false,
+        email_errors: "",
+        email_bool: false,
+        first_name_errors: "",
+        last_name_errors: "",
+        username_errors: "",
+        username_bool: false,
+        passworderrors: [],
+        passworderrorsbool: false
+      }
     };
-    this.UsernameAuthentication = this.UsernameAuthentication.bind(this);
-    this.PasswordAuthentication = this.PasswordAuthentication.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  UsernameAuthentication = () => {
-    // Goes to the backend
-    fetch("http://localhost:8080/usernameexists", {
-      method: "post",
-      mode: "cors",
-      body: this.state.username
-    })
-      .then(response => {
-        // returns a response which is a boolean
-        return response.json();
-      })
-      .then(bool => {
-        // if it is true then present error else then let it go through
+  Validation = () => {
+    var invalidbool = false;
+    var newerrors = {
+      has_error: false,
+      email_errors: "",
+      email_bool: false,
+      first_name_errors: "",
+      first_name_bool: false,
+      last_name_errors: "",
+      last_name_bool: false,
+      username_errors: "",
+      username_bool: false,
+      passworderrors: [],
+      passworderrorsbool: false
+    };
+    if (this.state.first_name === "") {
+      newerrors.has_error = true;
+      newerrors.first_name_bool = true;
+      newerrors.first_name_errors = "You must provide your First Name";
+      invalidbool = true;
+    }
+    if (this.state.last_name === "") {
+      newerrors.has_error = true;
+      newerrors.last_name_bool = true;
+      newerrors.last_name_errors = "You must provide your Last Name";
+      invalidbool = true;
+    }
+    if (this.state.email.indexOf("@") === -1) {
+      newerrors.has_error = true;
+      newerrors.email_bool = true;
+      newerrors.email_errors = "You must provide your Email";
+      invalidbool = true;
+    }
+    if (this.state.username === "") {
+      newerrors.has_error = true;
+      newerrors.username_bool = true;
+      newerrors.username_errors = "Please provide a username";
+      invalidbool = true;
+    } else {
+      UsernameTaken(this.state.username).then(bool => {
         if (bool) {
-          console.log(bool);
-          this.setState({
-            usernameerrorbool: true,
-            usernameerror: "Username Exists"
-          });
+          var newerrors = { ...this.state.errors };
+          newerrors.has_error = true;
+          newerrors.username_bool = true;
+          newerrors.username_errors = "Username is already taken";
+          invalidbool = true;
+          this.setState({ errors: newerrors });
         }
-        if (!bool) {
-          console.log(bool);
-          this.setState({ usernameerrorbool: false, usernameerror: "" });
-        }
-      })
-      .catch(error => {
-        console.log(error);
       });
-  };
-  PasswordAuthentication = () => {
-    // This method checks password authentication
-    const passwordMatches = passwordsMatch(this.password1, this.password2);
-    const passwordLength = passwordMustBeAtLeast10Char(this.state.password1);
-    if (!passwordMatches) {
-      this.setState({
-        passworderrors: this.state.passworderrors.concat([
-          "Password do not match"
-        ])
-      });
-    } else if (
-      passwordMatches &&
-      this.state.passworderrors.indexOf("Password do not match") !== undefined
-    ) {
-      this.state.passworderrors.splice(
-        this.state.passworderrors.indexOf("Password do not match"),
-        1
-      );
     }
 
-    if (!passwordLength) {
-      this.setState({
-        passworderrors: this.state.passworderrors.concat([
-          "Password must be atleast 10 Characters"
-        ])
-      });
-    } else if (
-      passwordLength &&
-      this.state.passworderrors.indexOf(
-        "Password must be atleast 10 Characters"
-      ) !== undefined
-    ) {
-      this.state.passworderrors.splice(
-        this.state.passworderrors.indexOf(
-          "Password must be atleast 10 Characters"
-        ),
-        1
-      );
+    if (!passwordsMatch(this.state.password1, this.state.password2)) {
+      newerrors.has_error = true;
+      newerrors.passworderrorsbool = true;
+      newerrors.passworderrors.push("Passwords do not match");
+      invalidbool = true;
     }
+    if (!passwordMustBeAtLeast10Char(this.state.password1)) {
+      newerrors.has_error = true;
+      newerrors.passworderrorsbool = true;
+      newerrors.passworderrors.push("Password must be at least 10 Characters");
+      invalidbool = true;
+    }
+    this.setState({ errors: newerrors });
+    return invalidbool;
   };
   handleSubmit(event) {
     event.preventDefault();
-    this.PasswordAuthentication();
-    this.UsernameAuthentication();
-
-    // if (this.state.passworderrors.length > 0 || this.state.usernameerrorbool) {
-    //     event.preventDefault();
-
-    // }
+    if (this.Validation()) {
+      event.preventDefault();
+    } else {
+      fetch("http://localhost:8080/signup", {
+        method: "post",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          Username: this.state.username,
+          FirstName: this.state.first_name,
+          LastName: this.state.last_name,
+          Email: this.state.email,
+          Password: this.state.password1
+        })
+      })
+        .then(response => {
+          return response.text();
+        })
+        .then(key => {
+          bake_cookie("CUser", key);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      this.setState({ redirect: true });
+    }
   }
 
-  render() {
-    return (
-      <form className="needs-validation" onSubmit={this.handleSubmit}>
-        <div className="form-group">
-          <label for="FirstName">First Name</label>
-          <input
-            type="text"
-            className={"form-control "}
-            id="FirstName"
-            placeholder="First Name"
-            onChange={event => {
-              this.setState({ first_name: event.currentTarget.value });
-            }}
-          />
-        </div>
-        <div className="form-group">
-          <label for="Email">Last Name</label>
-          <input
-            type="text"
-            className="form-control"
-            id="LastName"
-            placeholder="Last Name"
-            onChange={event => {
-              this.setState({ last_name: event.currentTarget.value });
-            }}
-          />
-        </div>
-        <div className="form-group">
-          <label for="Email">Email address</label>
-          <input
-            type="email"
-            className="form-control"
-            id="Email"
-            placeholder="Enter email"
-            onChange={event => {
-              this.setState({ email: event.currentTarget.value });
-            }}
-          />
-          <small id="emailHelp" className="form-text text-muted">
-            We'll never share your email with anyone else.
-          </small>
-        </div>
-        <div className="form-group">
-          <label for="Username">Username</label>
-          <input
-            type="text"
-            className={
-              "form-control " + isInvalid(this.state.usernameerrorbool)
-            }
-            id="Username"
-            placeholder="Username"
-            onChange={event => {
-              this.setState({ username: event.currentTarget.value });
-            }}
-          />
-          <div className="invalid-feedback"> {this.state.usernameerror} </div>
-        </div>
-        <div className="form-group">
-          <label for="Password1">Password</label>
-          <input
-            type="password"
-            className="form-control"
-            id="Password1"
-            placeholder="Password"
-            onChange={event => {
-              this.setState({ password1: event.target.value });
-            }}
-          />
-        </div>
-        <div className="form-group">
-          <label for="Password2">Password Repeat</label>
-          <input
-            type="password"
-            className={"form-control" + isInvalid(this.passworderrorsbool)}
-            id="Password2"
-            placeholder="Repeat Password"
-            onChange={event => {
-              this.setState({ password2: event.target.value });
-            }}
-          />
-          <div className="invalid-feedback">
-            {" "}
-            <ul>{showPasswordErrors(this.state.passworderrors)} </ul>
-          </div>
-        </div>
+  // if (this.state.passworderrors.length > 0 || this.state.usernameerrorbool) {
+  //     event.preventDefault();
 
-        <button type="submit"> Submit </button>
-      </form>
-    );
+  // }
+
+  render() {
+    if (this.state.redirect) {
+      return <Redirect to="/accountSummary" />;
+    } else {
+      return (
+        <form className="needs-validation" onSubmit={this.handleSubmit}>
+          <div className="form-group">
+            <label for="FirstName">First Name</label>
+            <input
+              type="text"
+              className={
+                "form-control " +
+                (this.state.errors.first_name_bool ? "is-invalid" : "")
+              }
+              id="FirstName"
+              placeholder="First Name"
+              onChange={event => {
+                this.setState({ first_name: event.currentTarget.value });
+              }}
+            />
+            <div className="invalid-feedback">
+              {this.state.errors.first_name_errors}
+            </div>
+          </div>
+          <div className="form-group">
+            <label for="LastName">Last Name</label>
+            <input
+              type="text"
+              className={
+                "form-control " +
+                (this.state.errors.last_name_bool ? "is-invalid" : "")
+              }
+              id="LastName"
+              placeholder="Last Name"
+              onChange={event => {
+                this.setState({ last_name: event.currentTarget.value });
+              }}
+            />
+            <div className="invalid-feedback">
+              {this.state.errors.last_name_errors}
+            </div>
+          </div>
+          <div className="form-group">
+            <label for="Email">Email address</label>
+            <input
+              type="email"
+              className={
+                "form-control " +
+                (this.state.errors.email_bool ? "is-invalid" : "")
+              }
+              id="Email"
+              placeholder="Enter email"
+              onChange={event => {
+                this.setState({ email: event.currentTarget.value });
+              }}
+            />
+            <div className="invalid-feedback">
+              {this.state.errors.email_errors}
+            </div>
+
+            {/* <small id="emailHelp" className="form-text text-muted">
+            We'll never share your email with anyone else.
+          </small> */}
+          </div>
+          <div className="form-group">
+            <label for="Username">Username</label>
+            <input
+              type="text"
+              className={
+                "form-control " +
+                (this.state.errors.username_bool ? "is-invalid" : "")
+              }
+              id="Username"
+              placeholder="Username"
+              onChange={event => {
+                this.setState({ username: event.currentTarget.value });
+              }}
+            />
+            <div className="invalid-feedback">
+              {" "}
+              {this.state.errors.username_errors}{" "}
+            </div>
+          </div>
+          <div className="form-group">
+            <label for="Password1">Password</label>
+            <input
+              type="password"
+              className={
+                "form-control " +
+                (this.state.errors.passworderrorsbool ? "is-invalid" : "")
+              }
+              id="Password1"
+              placeholder="Password"
+              onChange={event => {
+                this.setState({ password1: event.target.value });
+              }}
+            />
+          </div>
+          <div className="form-group">
+            <label for="Password2">Password Repeat</label>
+            <input
+              type="password"
+              className={
+                "form-control " +
+                (this.state.errors.passworderrorsbool ? "is-invalid" : "")
+              }
+              id="Password2"
+              placeholder="Repeat Password"
+              onChange={event => {
+                this.setState({ password2: event.target.value });
+              }}
+            />
+            <div className="invalid-feedback">
+              {" "}
+              <ul>{showPasswordErrors(this.state.errors.passworderrors)} </ul>
+            </div>
+          </div>
+
+          <button type="submit"> Submit </button>
+        </form>
+      );
+    }
   }
 }
 export default Signup;

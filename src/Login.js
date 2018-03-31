@@ -19,25 +19,8 @@ class Login extends Component {
       this.setState({ redirect: true });
     }
   }
-  PasswordValidation(password) {
-    if (password.length < 10) {
-      this.setState({
-        error: true,
-        passworderrors: "Password not long enough",
-        passwordInvalid: "is-invalid"
-      });
-      return true;
-    } else {
-      this.setState({
-        error: false,
-        passworderrors: "",
-        passwordInvalid: ""
-      });
-      return false;
-    }
-  }
-  handleSubmit(event) {
-    fetch("http://localhost:8080/login", {
+  Validation = () => {
+    return fetch("http://localhost:8080/loginAuthentication", {
       method: "post",
       mode: "cors",
       headers: {
@@ -49,17 +32,41 @@ class Login extends Component {
       })
     })
       .then(response => {
-        return response.text();
+        return response.json();
       })
-      .then(key => {
-        bake_cookie("CUser", key);
-      })
-      .catch(error => {
-        console.log(error);
+      .then(bool => {
+        return bool;
       });
-    console.log(read_cookie("CUser"));
-    this.setState({ redirect: true });
+  };
+
+  handleSubmit(event) {
     event.preventDefault();
+    this.Validation().then(bool => {
+      if (bool) {
+        fetch("http://localhost:8080/login", {
+          method: "post",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            username: this.state.username,
+            password: this.state.password
+          })
+        })
+          .then(response => {
+            return response.text();
+          })
+          .then(key => {
+            bake_cookie("CUser", key);
+          })
+          .catch(error => {
+            console.log(error);
+          });
+        console.log(read_cookie("CUser"));
+        this.setState({ redirect: true });
+      }
+    });
   }
 
   render() {
