@@ -177,9 +177,9 @@ class Signup extends Component {
               <div className="jumbotron">
                 <h1 className="display-4">CashIt</h1>
                 <p className="lead">
-                  Where you get money from Family, Friends, and others!!
+                  Where you get money from Family, Friends, and others!
                 </p>
-                <hr className="my-4" />
+                <hr className="my-3" />
                 <p>If you are a current member:</p>
                 <p className="lead">
                   <Link to="/login" className="btn btn-primary">
@@ -305,7 +305,9 @@ class Signup extends Component {
                   </div>
                 </div>
 
-                <button type="submit"> Submit </button>
+                <button className="btn btn-primary" type="submit">
+                  Signup
+                </button>
               </form>
             </div>
           </div>

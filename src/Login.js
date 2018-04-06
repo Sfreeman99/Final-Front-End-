@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { bake_cookie, read_cookie } from "sfcookies";
 import { getToken } from "./CookieInformation";
 import { Redirect } from "react-router-dom";
+import Signup from "./Signup";
 
 class Login extends Component {
   constructor(props) {
@@ -74,16 +75,19 @@ class Login extends Component {
       return <Redirect to="/accountSummary" />;
     }
     return (
-      <form className="container needs-validation" onSubmit={this.handleSubmit}>
-        <div className="form-group row">
-          <label htmlFor="Username" className="col-sm-2 col-form-label">
+      <form
+        className="needs-validation login-form-margin-top"
+        onSubmit={this.handleSubmit}
+      >
+        <div className="form-group col-lg-4 offset-lg-4">
+          <label for="Username" className="col-lg-2 col-form-label">
             Username
           </label>
-          <div className="col-sm-10">
+          <div className="col-lg-12">
             <input
               type="text"
-              className="form-control"
-              id="Username"
+              className="form-control input-form"
+              id="Username "
               placeholder="Username"
               name="username"
               value={this.state.username}
@@ -93,14 +97,16 @@ class Login extends Component {
             />
           </div>
         </div>
-        <div className="form-group row">
-          <label htmlFor="inputPassword3" className="col-sm-2 col-form-label">
+        <div className="form-group col-lg-4 offset-lg-4">
+          <label htmlFor="inputPassword3" className="col-lg-2 col-form-label">
             Password
           </label>
-          <div className="col-sm-10">
+          <div className="col-lg-12">
             <input
               type="password"
-              className={"form-control " + this.state.passwordInvalid}
+              className={
+                "form-control input-form " + this.state.passwordInvalid
+              }
               id="inputPassword3"
               placeholder="Password"
               value={this.state.password}
@@ -111,11 +117,15 @@ class Login extends Component {
             />
             <div className="invalid-feedback">{this.state.passworderrors}</div>
           </div>
-
-          <button type="submit">Submit </button>
+        </div>
+        <div className="col-lg-4 offset-lg-4 signup-submit-button-width">
+          <button className="btn btn-primary btn-lg center" type="submit">
+            Submit
+          </button>
         </div>
       </form>
     );
   }
 }
+
 export default Login;

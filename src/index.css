@@ -6,3 +6,15 @@ body {
 .form-padd {
   padding-top: 75px;
 }
+
+.signup-submit-button-width {
+  padding: 5px 28px 0px 28px;
+}
+
+.login-form-margin-top {
+  margin-top: 10%;
+}
+
+.input-form {
+  border-radius: 25px 25px 25px 25px;
+}
