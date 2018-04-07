@@ -62,7 +62,11 @@ class Signup extends Component {
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-
+  componentDidMount() {
+    if (getToken() === true) {
+      this.setState({ redirect: true });
+    }
+  }
   Validation = () => {
     var invalidbool = false;
     var newerrors = {
