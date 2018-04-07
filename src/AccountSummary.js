@@ -16,10 +16,10 @@ class AccountSummary extends Component {
       key: "",
       loaded: false,
       tabIsActive: {
-        nav_link: "transactions",
-        tab: 1
+        nav_link: "transactions"
       }
     };
+    this.tabContent = this.tabContent.bind(this);
     this.changeActive = this.changeActive.bind(this);
     this.tabIsActive = this.tabIsActive.bind(this);
   }
@@ -56,9 +56,18 @@ class AccountSummary extends Component {
         console.log(error);
       });
   };
+  tabContent = id => {
+    if (this.state.tabIsActive.nav_link === id) {
+      return "show active";
+    } else {
+      return "";
+    }
+  };
   changeActive = e => {
     e.preventDefault();
-    this.setState({ tabIsActive: { nav_link: e.currentTarget.id } });
+    this.setState({
+      tabIsActive: { nav_link: e.currentTarget.id, id: e.currentTarget.id }
+    });
   };
   tabIsActive = id => {
     if (this.state.tabIsActive.nav_link === id) {
@@ -108,8 +117,8 @@ class AccountSummary extends Component {
               </li>
               <li className="nav-item">
                 <a
-                  id="withdraw"
-                  className="nav-link"
+                  id="withdrawal"
+                  className={"nav-link " + this.tabIsActive("withdrawal")}
                   onClick={e => {
                     this.changeActive(e);
                   }}
@@ -118,6 +127,32 @@ class AccountSummary extends Component {
                 </a>
               </li>
             </ul>
+            <div className="tab-content" id="nav-tabContent">
+              <div
+                className={"tab-pane fade " + this.tabContent("transactions")}
+                id="transactions"
+                role="tabpanel"
+                aria-labelledby="nav-home-tab"
+              >
+                Transactions
+              </div>
+              <div
+                className={"tab-pane fade " + this.tabContent("deposit")}
+                id="deposit"
+                role="tabpanel"
+                aria-labelledby="nav-profile-tab"
+              >
+                Deposit
+              </div>
+              <div
+                className={"tab-pane fade " + this.tabContent("withdrawal")}
+                id="withdrawal"
+                role="tabpanel"
+                aria-labelledby="nav-contact-tab"
+              >
+                Withdraw
+              </div>
+            </div>
           </div>
         </div>
       );
