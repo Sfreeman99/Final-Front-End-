@@ -14,8 +14,14 @@ class AccountSummary extends Component {
     this.state = {
       userInfo: {},
       key: "",
-      loaded: false
+      loaded: false,
+      tabIsActive: {
+        nav_link: "transactions",
+        tab: 1
+      }
     };
+    this.changeActive = this.changeActive.bind(this);
+    this.tabIsActive = this.tabIsActive.bind(this);
   }
   componentDidMount() {
     fetch("http://localhost:8080/accountSummary", {
@@ -50,27 +56,69 @@ class AccountSummary extends Component {
         console.log(error);
       });
   };
-
+  changeActive = e => {
+    e.preventDefault();
+    this.setState({ tabIsActive: { nav_link: e.currentTarget.id } });
+  };
+  tabIsActive = id => {
+    if (this.state.tabIsActive.nav_link === id) {
+      return "active";
+    } else {
+      return "";
+    }
+  };
   render() {
     if (!this.state.loaded) {
       return <div className="alert alert-danger"> key not loaded </div>;
     } else {
       return (
-        <div class="jumbotron">
-          <h1 class="display-4">Hello, {this.state.userInfo.username}!</h1>
-          <p class="lead">
-            Your balance is {(this.state.userInfo.balance / 100).toFixed(2)}
-          </p>
-          <hr class="my-4" />
-          <p>
-            It uses utility classes for typography and spacing to space content
-            out within the larger container.
-          </p>
-          <p class="lead">
-            <a class="btn btn-primary btn-lg" href="#" role="button">
-              Learn more
-            </a>
-          </p>
+        <div>
+          <div className="container">
+            <div class="jumbotron">
+              <h1 class="display-4">Hello, {this.state.userInfo.username}!</h1>
+              <p class="lead">
+                Your balance is {(this.state.userInfo.balance / 100).toFixed(2)}
+              </p>
+              <hr class="my-4" />
+            </div>
+          </div>
+          <div className="container">
+            <ul className="nav nav-tabs" role="tablist">
+              <li className="nav-item">
+                <a
+                  id="transactions"
+                  className={"nav-link " + this.tabIsActive("transactions")}
+                  onClick={e => {
+                    this.changeActive(e);
+                  }}
+                >
+                  Transactions
+                </a>
+              </li>
+              <li className="nav-item">
+                <a
+                  id="deposit"
+                  className={"nav-link " + this.tabIsActive("deposit")}
+                  onClick={e => {
+                    this.changeActive(e);
+                  }}
+                >
+                  Deposit
+                </a>
+              </li>
+              <li className="nav-item">
+                <a
+                  id="withdraw"
+                  className="nav-link"
+                  onClick={e => {
+                    this.changeActive(e);
+                  }}
+                >
+                  Withdraw
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
       );
     }
