@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { bake_cookie, read_cookie } from "sfcookies";
 import { getToken } from "./CookieInformation";
 import { Redirect } from "react-router-dom";
-import Signup from "./Signup";
 
 class Login extends Component {
   constructor(props) {

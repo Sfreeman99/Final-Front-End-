@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import { bake_cookie, read_cookie } from "sfcookies";
+import { bake_cookie } from "sfcookies";
 import { getToken } from "./CookieInformation";
 import { Redirect, Link } from "react-router-dom";
-import { isBoolean } from "util";
 
 const UsernameTaken = username => {
   return fetch("http://localhost:8080/usernameexists", {
