@@ -1,13 +1,85 @@
 import React, { Component } from "react";
-import { bake_cookie, read_cookie, delete_cookie } from "sfcookies";
+import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
+import { read_cookie, delete_cookie } from "sfcookies";
 
-function Transactions(props) {
-  const transactions = props.transactions.map(transaction => (
-    <li key={transaction.id.toString()}> Amount: {transaction.amount} </li>
-  ));
-  return <ul> {transactions} </ul>;
-}
+// function Transactions(props) {
+//   const transactions = props.transactions.map(transaction => (
+//     <li key={transaction.id.toString()}> Amount: {transaction.amount} </li>
+//   ));
+//   return <ul> {transactions} </ul>;
+// }
+const deposit = () => {
+  return (
+    <div className="tab-padding">
+      <div className="input-group mb-3">
+        <div className="input-group-prepend">
+          <span className="input-group-text">$</span>
+        </div>
+        <input
+          type="text"
+          className="form-control"
+          aria-label="Amount (to the nearest dollar)"
+        />
+        <div className="input-group-append">
+          <span className="input-group-text">.00</span>
+        </div>
+      </div>
+      <button className="btn btn-primary" type="submit">
+        Deposit
+      </button>
+    </div>
+  );
+};
+const withdraw = () => {
+  return (
+    <div className="tab-padding">
+      <div className="input-group mb-3">
+        <div className="input-group-prepend">
+          <span className="input-group-text">$</span>
+        </div>
+        <input
+          type="text"
+          className="form-control"
+          aria-label="Amount (to the nearest dollar)"
+        />
+        <div className="input-group-append">
+          <span className="input-group-text">.00</span>
+        </div>
+      </div>
+      <button className="btn btn-primary" type="submit">
+        Withdraw
+      </button>
+    </div>
+  );
+};
 
+const Transactions = props => {
+  const transaction = props.transactions.map(transaction => {
+    return (
+      <tr>
+        <th scope="row">{transaction.id}</th>
+        <td>{transaction.date}</td>
+        <td>{transaction.type}</td>
+        <td>{(transaction.amount / 100).toFixed(2)}</td>
+      </tr>
+    );
+  });
+  return (
+    <div className="tab-padding">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Transaction ID</th>
+            <th scope="col">Day(Year,Month,Day)</th>
+            <th scope="col">Type</th>
+            <th scope="col">amount</th>
+          </tr>
+        </thead>
+        <tbody>{transaction}</tbody>
+      </table>
+    </div>
+  );
+};
 class AccountSummary extends Component {
   constructor(props) {
     super(props);
@@ -17,11 +89,10 @@ class AccountSummary extends Component {
       loaded: false,
       tabIsActive: {
         nav_link: "transactions"
-      }
+      },
+      transactions: []
     };
-    this.tabContent = this.tabContent.bind(this);
-    this.changeActive = this.changeActive.bind(this);
-    this.tabIsActive = this.tabIsActive.bind(this);
+    this.transactions = this.transactions.bind(this);
   }
   componentDidMount() {
     fetch("http://localhost:8080/accountSummary", {
@@ -38,8 +109,28 @@ class AccountSummary extends Component {
       .then(accountInfo => {
         console.log(accountInfo);
         this.setState({ userInfo: accountInfo, loaded: true });
+        this.transactions(accountInfo.id);
       });
   }
+  transactions = id => {
+    return fetch(
+      "http://localhost:8080/transactions/" + this.state.userInfo.id,
+      {
+        method: "get",
+        mode: "cors",
+        headers: {
+          "Content-Type": "text/plain"
+        }
+      }
+    )
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+        console.log(data);
+        this.setState({ transactions: data });
+      });
+  };
   Logout = () => {
     fetch("http://localhost:8080/logout", {
       method: "post",
@@ -56,105 +147,97 @@ class AccountSummary extends Component {
         console.log(error);
       });
   };
-  tabContent = id => {
-    if (this.state.tabIsActive.nav_link === id) {
-      return "show active";
-    } else {
-      return "";
-    }
-  };
-  changeActive = e => {
-    e.preventDefault();
-    this.setState({
-      tabIsActive: { nav_link: e.currentTarget.id, id: e.currentTarget.id }
-    });
-  };
-  tabIsActive = id => {
-    if (this.state.tabIsActive.nav_link === id) {
-      return "active";
-    } else {
-      return "";
-    }
-  };
   render() {
     if (!this.state.loaded) {
       return <div className="alert alert-danger"> key not loaded </div>;
     } else {
       return (
-        <div>
-          <div className="container">
-            <div class="jumbotron">
-              <h1 class="display-4">Hello, {this.state.userInfo.username}!</h1>
-              <p class="lead">
-                Your balance is {(this.state.userInfo.balance / 100).toFixed(2)}
-              </p>
-              <hr class="my-4" />
-            </div>
-          </div>
-          <div className="container">
-            <ul className="nav nav-tabs" role="tablist">
-              <li className="nav-item">
-                <a
+        <Router basename={this.state.userInfo.username}>
+          <div>
+            <div>
+              <div className="container">
+                <div class="jumbotron">
+                  <h1 class="display-4">
+                    Hello, {this.state.userInfo.username}!
+                  </h1>
+                  <p class="lead">
+                    Your balance is{" "}
+                    {(this.state.userInfo.balance / 100).toFixed(2)}
+                  </p>
+                  <hr class="my-4" />
+                </div>
+              </div>
+              <div className="container">
+                <ul className="nav nav-tabs" role="tablist">
+                  <li className="nav-item">
+                    {/* <a
                   id="transactions"
                   className={"nav-link " + this.tabIsActive("transactions")}
                   onClick={e => {
                     this.changeActive(e);
                   }}
-                >
-                  Transactions
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
-                  id="deposit"
-                  className={"nav-link " + this.tabIsActive("deposit")}
-                  onClick={e => {
-                    this.changeActive(e);
-                  }}
-                >
-                  Deposit
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
-                  id="withdrawal"
-                  className={"nav-link " + this.tabIsActive("withdrawal")}
-                  onClick={e => {
-                    this.changeActive(e);
-                  }}
-                >
-                  Withdraw
-                </a>
-              </li>
-            </ul>
-            <div className="tab-content" id="nav-tabContent">
-              <div
-                className={"tab-pane fade " + this.tabContent("transactions")}
-                id="transactions"
-                role="tabpanel"
-                aria-labelledby="nav-home-tab"
-              >
-                Transactions
-              </div>
-              <div
-                className={"tab-pane fade " + this.tabContent("deposit")}
-                id="deposit"
-                role="tabpanel"
-                aria-labelledby="nav-profile-tab"
-              >
-                Deposit
-              </div>
-              <div
-                className={"tab-pane fade " + this.tabContent("withdrawal")}
-                id="withdrawal"
-                role="tabpanel"
-                aria-labelledby="nav-contact-tab"
-              >
-                Withdraw
+                > */}
+                    <NavLink
+                      exact
+                      activeClassName="active"
+                      className="nav-link"
+                      to="/transactions"
+                    >
+                      Transactions
+                    </NavLink>
+                    {/* </a> */}
+                  </li>
+                  <li className="nav-item">
+                    {/* <a
+                    id="deposit"
+                    className={"nav-link " + this.tabIsActive("deposit")}
+                    onClick={e => {
+                      this.changeActive(e);
+                    }}
+                  >
+                    Deposit
+                  </a> */}
+                    <NavLink
+                      activeClassName="active"
+                      className="nav-link"
+                      to="/deposit"
+                    >
+                      {" "}
+                      Deposit{" "}
+                    </NavLink>
+                  </li>
+                  <li className="nav-item">
+                    {/* <a
+                    id="withdrawal"
+                    className={"nav-link " + this.tabIsActive("withdrawal")}
+                    onClick={e => {
+                      this.changeActive(e);
+                    }}
+                  >
+                    Withdraw
+                  </a> */}
+                    <NavLink
+                      activeClassName="active"
+                      className="nav-link"
+                      to="/withdraw"
+                    >
+                      {" "}
+                      Withdraw{" "}
+                    </NavLink>
+                  </li>
+                </ul>
               </div>
             </div>
+            <Route
+              path="/transactions"
+              component={() => (
+                <Transactions transactions={this.state.transactions} />
+              )}
+            />
+            <Route path="/deposit" component={deposit} />
+            <Route path="/withdraw" component={withdraw} />
           </div>
-        </div>
+        </Router>
       );
     }
   }
