@@ -93,6 +93,7 @@ class AccountSummary extends Component {
       transactions: []
     };
     this.transactions = this.transactions.bind(this);
+    this.Logout = this.Logout.bind(this);
   }
   componentDidMount() {
     fetch("http://localhost:8080/accountSummary", {
@@ -131,7 +132,8 @@ class AccountSummary extends Component {
         this.setState({ transactions: data });
       });
   };
-  Logout = () => {
+  Logout = e => {
+    e.preventDefault();
     fetch("http://localhost:8080/logout", {
       method: "post",
       mode: "cors",
@@ -142,6 +144,7 @@ class AccountSummary extends Component {
     })
       .then(response => {
         delete_cookie("CUser");
+        window.location.reload(true);
       })
       .catch(error => {
         console.log(error);
@@ -165,6 +168,12 @@ class AccountSummary extends Component {
                     {(this.state.userInfo.balance / 100).toFixed(2)}
                   </p>
                   <hr class="my-4" />
+                  <button
+                    className="btn btn-primary"
+                    onClick={e => this.Logout(e)}
+                  >
+                    Logout
+                  </button>
                 </div>
               </div>
               <div className="container">

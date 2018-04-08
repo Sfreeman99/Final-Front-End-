@@ -18,3 +18,19 @@ body {
 .input-form {
   border-radius: 25px 25px 25px 25px;
 }
+.tab-padding {
+  margin-right: 170px;
+  margin-left: 170px;
+  margin-top: 40px;
+}
+/* 
+  Checks and sees if the screen is bigger than 1600px
+  if it is then it changes the padding to the following 
+*/
+@media (min-width: 1600px) {
+  .tab-padding {
+    margin-left: 800px;
+    margin-right: 800px;
+    margin-top: 40px;
+  }
+}
