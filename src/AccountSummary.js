@@ -1,63 +1,19 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import { read_cookie, delete_cookie } from "sfcookies";
+import _ from "lodash";
 
 // function Transactions(props) {
 //   const transactions = props.transactions.map(transaction => (
 //     <li key={transaction.id.toString()}> Amount: {transaction.amount} </li>
 //   ));
 //   return <ul> {transactions} </ul>;
-// }
-const deposit = () => {
-  return (
-    <div className="tab-padding">
-      <div className="input-group mb-3">
-        <div className="input-group-prepend">
-          <span className="input-group-text">$</span>
-        </div>
-        <input
-          type="text"
-          className="form-control"
-          aria-label="Amount (to the nearest dollar)"
-        />
-        <div className="input-group-append">
-          <span className="input-group-text">.00</span>
-        </div>
-      </div>
-      <button className="btn btn-primary" type="submit">
-        Deposit
-      </button>
-    </div>
-  );
-};
-const withdraw = () => {
-  return (
-    <div className="tab-padding">
-      <div className="input-group mb-3">
-        <div className="input-group-prepend">
-          <span className="input-group-text">$</span>
-        </div>
-        <input
-          type="text"
-          className="form-control"
-          aria-label="Amount (to the nearest dollar)"
-        />
-        <div className="input-group-append">
-          <span className="input-group-text">.00</span>
-        </div>
-      </div>
-      <button className="btn btn-primary" type="submit">
-        Withdraw
-      </button>
-    </div>
-  );
-};
 
 const Transactions = props => {
   const transaction = props.transactions.map(transaction => {
     return (
       <tr>
-        <th scope="row">{transaction.id}</th>
+        <th scope="row">{transaction.transactionId}</th>
         <td>{transaction.date}</td>
         <td>{transaction.type}</td>
         <td>{(transaction.amount / 100).toFixed(2)}</td>
@@ -65,19 +21,17 @@ const Transactions = props => {
     );
   });
   return (
-    <div className="tab-padding">
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">Transaction ID</th>
-            <th scope="col">Day(Year,Month,Day)</th>
-            <th scope="col">Type</th>
-            <th scope="col">amount</th>
-          </tr>
-        </thead>
-        <tbody>{transaction}</tbody>
-      </table>
-    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Transaction ID</th>
+          <th scope="col">Day(Year,Month,Day)</th>
+          <th scope="col">Type</th>
+          <th scope="col">amount</th>
+        </tr>
+      </thead>
+      <tbody>{transaction}</tbody>
+    </table>
   );
 };
 class AccountSummary extends Component {
@@ -90,8 +44,12 @@ class AccountSummary extends Component {
       tabIsActive: {
         nav_link: "transactions"
       },
-      transactions: []
+      transactions: [],
+      withdraw: 0,
+      deposit: 0
     };
+    this.handleDeposit = this.handleDeposit.bind(this);
+    this.handleWithdraw = this.handleWithdraw.bind(this);
     this.transactions = this.transactions.bind(this);
     this.Logout = this.Logout.bind(this);
   }
@@ -113,7 +71,65 @@ class AccountSummary extends Component {
         this.transactions(accountInfo.id);
       });
   }
-  transactions = id => {
+  handleDeposit(e) {
+    e.preventDefault();
+    fetch("http://localhost:8080/deposit", {
+      method: "post",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username: this.state.userInfo.username,
+        amount: this.state.deposit,
+        userId: this.state.userInfo.id
+      })
+    })
+      .then(response => response.json())
+      .then(transaction => {
+        // window.location.reload(true);
+        this.setState({
+          transactions: _.concat(this.state.transactions, transaction),
+          userInfo: _.update(this.state.userInfo, "balance", currentBalance => {
+            return currentBalance + transaction.amount;
+          })
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    e.currentTarget.reset();
+  }
+  handleWithdraw(e) {
+    e.preventDefault();
+    fetch("http://localhost:8080/withdraw", {
+      method: "post",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username: this.state.userInfo.username,
+        amount: this.state.withdraw,
+        userId: this.state.userInfo.id
+      })
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(transaction => {
+        this.setState({
+          transactions: _.concat(this.state.transactions, transaction),
+          userInfo: _.update(this.state.userInfo, "balance", currentBalance => {
+            return currentBalance - transaction.amount;
+          })
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+  transactions(id) {
     return fetch(
       "http://localhost:8080/transactions/" + this.state.userInfo.id,
       {
@@ -131,8 +147,8 @@ class AccountSummary extends Component {
         console.log(data);
         this.setState({ transactions: data });
       });
-  };
-  Logout = e => {
+  }
+  Logout(e) {
     e.preventDefault();
     fetch("http://localhost:8080/logout", {
       method: "post",
@@ -149,104 +165,109 @@ class AccountSummary extends Component {
       .catch(error => {
         console.log(error);
       });
-  };
+  }
   render() {
     if (!this.state.loaded) {
       return <div className="alert alert-danger"> key not loaded </div>;
     } else {
       return (
-        <Router basename={this.state.userInfo.username}>
-          <div>
-            <div>
-              <div className="container">
-                <div class="jumbotron">
-                  <h1 class="display-4">
-                    Hello, {this.state.userInfo.username}!
-                  </h1>
-                  <p class="lead">
-                    Your balance is{" "}
-                    {(this.state.userInfo.balance / 100).toFixed(2)}
-                  </p>
-                  <hr class="my-4" />
-                  <button
-                    className="btn btn-primary"
-                    onClick={e => this.Logout(e)}
-                  >
-                    Logout
-                  </button>
+        <div>
+          <div className="container">
+            <div class="jumbotron">
+              <button
+                id="logout-button-positon"
+                className="btn btn-primary"
+                onClick={e => this.Logout(e)}
+              >
+                Logout
+              </button>
+              <h1 class="display-4">CashIt</h1>
+              <p class="lead">
+                Hello {this.state.userInfo.username}! Your balance is{" "}
+                {"$" + (this.state.userInfo.balance / 100).toFixed(2)}
+              </p>
+              <hr class="my-4" />
+            </div>
+          </div>
+          <div className="container">
+            <div className="row">
+              <div className="col-6">
+                <h3>Transactions</h3>
+                <Transactions transactions={this.state.transactions} />
+              </div>
+              <div className="col-6">
+                <div className="col-12">
+                  <div class="card">
+                    <div class="card-header">Deposit</div>
+                    <div class="card-body">
+                      <div className="card-title">Deposit Amount</div>
+                      <form onSubmit={this.handleDeposit}>
+                        <p class="card-text">
+                          <div className="input-group mb-3">
+                            <div className="input-group-prepend">
+                              <span className="input-group-text">$</span>
+                            </div>
+                            <input
+                              name="deposit"
+                              type="text"
+                              className="form-control"
+                              aria-label="Amount (to the nearest dollar)"
+                              onChange={e =>
+                                this.setState({
+                                  deposit: e.currentTarget.value * 100
+                                })
+                              }
+                            />
+                            <div className="input-group-append">
+                              <span className="input-group-text">.00</span>
+                            </div>
+                          </div>
+                        </p>
+                        <button type="submit" class="btn btn-primary">
+                          Deposit
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div class="card">
+                    <div class="card-header">Withdraw</div>
+                    <div class="card-body">
+                      <div className="card-title">Withdraw Amount</div>
+                      <form onSubmit={this.handleWithdraw}>
+                        <p class="card-text">
+                          <div className="input-group mb-3">
+                            <div className="input-group-prepend">
+                              <span className="input-group-text">$</span>
+                            </div>
+                            <input
+                              name="withdraw"
+                              type="text"
+                              className="form-control"
+                              aria-label="Amount (to the nearest dollar)"
+                              onChange={e =>
+                                this.setState({
+                                  withdraw: e.currentTarget.value * 100
+                                })
+                              }
+                            />
+                            <div className="input-group-append">
+                              <span className="input-group-text">.00</span>
+                            </div>
+                          </div>
+                        </p>
+                        <button type="submit" class="btn btn-primary">
+                          Withdraw
+                        </button>
+                      </form>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="container">
-                <ul className="nav nav-tabs" role="tablist">
-                  <li className="nav-item">
-                    {/* <a
-                  id="transactions"
-                  className={"nav-link " + this.tabIsActive("transactions")}
-                  onClick={e => {
-                    this.changeActive(e);
-                  }}
-                > */}
-                    <NavLink
-                      exact
-                      activeClassName="active"
-                      className="nav-link"
-                      to="/transactions"
-                    >
-                      Transactions
-                    </NavLink>
-                    {/* </a> */}
-                  </li>
-                  <li className="nav-item">
-                    {/* <a
-                    id="deposit"
-                    className={"nav-link " + this.tabIsActive("deposit")}
-                    onClick={e => {
-                      this.changeActive(e);
-                    }}
-                  >
-                    Deposit
-                  </a> */}
-                    <NavLink
-                      activeClassName="active"
-                      className="nav-link"
-                      to="/deposit"
-                    >
-                      {" "}
-                      Deposit{" "}
-                    </NavLink>
-                  </li>
-                  <li className="nav-item">
-                    {/* <a
-                    id="withdrawal"
-                    className={"nav-link " + this.tabIsActive("withdrawal")}
-                    onClick={e => {
-                      this.changeActive(e);
-                    }}
-                  >
-                    Withdraw
-                  </a> */}
-                    <NavLink
-                      activeClassName="active"
-                      className="nav-link"
-                      to="/withdraw"
-                    >
-                      {" "}
-                      Withdraw{" "}
-                    </NavLink>
-                  </li>
-                </ul>
-              </div>
             </div>
-            <Route
-              path="/transactions"
-              component={() => (
-                <Transactions transactions={this.state.transactions} />
-              )}
-            />
-            <Route path="/deposit" component={deposit} />
-            <Route path="/withdraw" component={withdraw} />
           </div>
-        </Router>
+        </div>
       );
     }
   }
