@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { bake_cookie, read_cookie } from "sfcookies";
 import { getToken } from "./CookieInformation";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 
 class Login extends Component {
   constructor(props) {
@@ -65,6 +65,8 @@ class Login extends Component {
           });
         console.log(read_cookie("CUser"));
         this.setState({ redirect: true });
+      } else {
+        this.setState({ error: true });
       }
     });
   }
@@ -85,13 +87,19 @@ class Login extends Component {
           <div className="col-lg-12">
             <input
               type="text"
-              className="form-control input-form"
+              className={
+                "form-control input-form " +
+                (this.state.error ? "is-invalid" : "")
+              }
               id="Username "
               placeholder="Username"
               name="username"
               value={this.state.username}
               onChange={event =>
-                this.setState({ username: event.target.value })
+                this.setState({
+                  username: event.target.value,
+                  error: false
+                })
               }
             />
           </div>
@@ -104,20 +112,27 @@ class Login extends Component {
             <input
               type="password"
               className={
-                "form-control input-form " + this.state.passwordInvalid
+                "form-control input-form " +
+                (this.state.error ? "is-invalid" : "")
               }
               id="inputPassword3"
               placeholder="Password"
               value={this.state.password}
               name="password"
               onChange={event =>
-                this.setState({ password: event.target.value })
+                this.setState({
+                  password: event.target.value,
+                  error: false
+                })
               }
             />
-            <div className="invalid-feedback">{this.state.passworderrors}</div>
+            <div className="invalid-feedback">Username/Password is invalid</div>
           </div>
         </div>
         <div className="col-lg-4 offset-lg-4 signup-submit-button-width">
+          <Link className="btn btn-danger btn-lg" to="/signup">
+            Back
+          </Link>
           <button className="btn btn-primary btn-lg center" type="submit">
             Submit
           </button>
