@@ -195,7 +195,7 @@ class Signup extends Component {
               <h2> Signup </h2>
               <form className="needs-validation" onSubmit={this.handleSubmit}>
                 <div className="form-group">
-                  <label for="FirstName">First Name</label>
+                  <label htmlFor="FirstName">First Name</label>
                   <input
                     type="text"
                     className={
@@ -213,7 +213,7 @@ class Signup extends Component {
                   </div>
                 </div>
                 <div className="form-group">
-                  <label for="LastName">Last Name</label>
+                  <label htmlFor="LastName">Last Name</label>
                   <input
                     type="text"
                     className={
@@ -231,7 +231,7 @@ class Signup extends Component {
                   </div>
                 </div>
                 <div className="form-group">
-                  <label for="Email">Email address</label>
+                  <label htmlFor="Email">Email address</label>
                   <input
                     type="email"
                     className={
@@ -253,7 +253,7 @@ class Signup extends Component {
           </small> */}
                 </div>
                 <div className="form-group">
-                  <label for="Username">Username</label>
+                  <label htmlFor="Username">Username</label>
                   <input
                     type="text"
                     className={
@@ -272,7 +272,7 @@ class Signup extends Component {
                   </div>
                 </div>
                 <div className="form-group">
-                  <label for="Password1">Password</label>
+                  <label htmlFor="Password1">Password</label>
                   <input
                     type="password"
                     className={
@@ -287,7 +287,7 @@ class Signup extends Component {
                   />
                 </div>
                 <div className="form-group">
-                  <label for="Password2">Password Repeat</label>
+                  <label htmlFor="Password2">Password Repeat</label>
                   <input
                     type="password"
                     className={

@@ -81,7 +81,7 @@ class Login extends Component {
         onSubmit={this.handleSubmit}
       >
         <div className="form-group col-lg-4 offset-lg-4">
-          <label for="Username" className="col-lg-2 col-form-label">
+          <label htmlFor="Username" className="col-lg-2 col-form-label">
             Username
           </label>
           <div className="col-lg-12">
