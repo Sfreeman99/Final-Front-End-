@@ -9,6 +9,55 @@ import _ from "lodash";
 //   ));
 //   return <ul> {transactions} </ul>;
 
+const DeleteAccount = props => {
+  return (
+    <form onSubmit={props.onSubmit}>
+      <div
+        className="modal fade"
+        id="DeleteAccount"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="DeleteAccountLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="DeleteAccountLabel">
+                Are You Sure?
+              </h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              If you click the delete account button all information of your
+              account will be permanently removed!
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" className="btn btn-danger">
+                Delete Account
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  );
+};
+
 const Transactions = props => {
   const transaction = props.transactions.map(transaction => {
     return (
@@ -38,6 +87,7 @@ class AccountSummary extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      show_delete_account: false,
       userInfo: {},
       key: "",
       loaded: false,
@@ -52,8 +102,12 @@ class AccountSummary extends Component {
     this.handleWithdraw = this.handleWithdraw.bind(this);
     this.transactions = this.transactions.bind(this);
     this.Logout = this.Logout.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
-
+  handleDelete(e) {
+    e.preventDefault();
+    alert("Delete button was clicked");
+  }
   componentDidMount() {
     fetch("http://localhost:8080/accountSummary", {
       method: "post",
@@ -176,19 +230,27 @@ class AccountSummary extends Component {
           <div className="container">
             <div class="jumbotron">
               <button
-                id="logout-button-positon"
+                id="logout-button-position"
                 className="btn btn-primary"
                 onClick={e => this.Logout(e)}
               >
                 Logout
               </button>
-              <button
+              {/* <button
+                type="button"
                 id="logout-button-positon"
                 className="btn btn-danger btn-lg"
-                onClick={e => {
-                  e.preventDefault();
-                  alert("Delete was pressed");
-                }}
+                data-toggle="modal"
+                data-target="#exampleModal"
+              >
+                Delete Account
+              </button> */}
+              <button
+                id="logout-button-position"
+                type="button"
+                class="btn btn-danger"
+                data-toggle="modal"
+                data-target="#DeleteAccount"
               >
                 Delete Account
               </button>
@@ -198,6 +260,7 @@ class AccountSummary extends Component {
                 {"$" + (this.state.userInfo.balance / 100).toFixed(2)}
               </p>
               <hr className="my-4" />
+              <DeleteAccount onSubmit={this.handleDelete} />
             </div>
           </div>
           <div className="container">
