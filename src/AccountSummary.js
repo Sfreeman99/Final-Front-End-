@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { read_cookie, delete_cookie } from "sfcookies";
 import _ from "lodash";
 
@@ -41,6 +41,7 @@ const DeleteAccount = props => {
             </div>
             <div className="modal-footer">
               <button
+                id="close"
                 type="button"
                 className="btn btn-secondary"
                 data-dismiss="modal"
@@ -87,7 +88,7 @@ class AccountSummary extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      show_delete_account: false,
+      cookieDeleted: false,
       userInfo: {},
       key: "",
       loaded: false,
@@ -106,7 +107,14 @@ class AccountSummary extends Component {
   }
   handleDelete(e) {
     e.preventDefault();
-    alert("Delete button was clicked");
+    document.getElementById("close").click();
+    fetch(`http://localhost:8080/delete/${this.state.userInfo.id}`, {
+      method: "delete",
+      mode: "cors"
+    }).then(() => {
+      delete_cookie("CUser");
+      this.setState({ cookieDeleted: true });
+    });
   }
   componentDidMount() {
     fetch("http://localhost:8080/accountSummary", {
@@ -224,6 +232,9 @@ class AccountSummary extends Component {
   render() {
     if (!this.state.loaded) {
       return <div className="alert alert-danger"> key not loaded </div>;
+    }
+    if (this.state.cookieDeleted) {
+      return <Redirect to="/signup" />;
     } else {
       return (
         <div>
