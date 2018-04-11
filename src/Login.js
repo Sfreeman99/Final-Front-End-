@@ -14,11 +14,13 @@ class Login extends Component {
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+
   componentDidMount() {
     if (getToken() === true) {
       this.setState({ redirect: true });
     }
   }
+
   Validation = () => {
     return fetch("http://localhost:8080/loginAuthentication", {
       method: "post",
@@ -34,37 +36,41 @@ class Login extends Component {
       .then(response => {
         return response.json();
       })
-      .then(bool => {
-        return bool;
+      .then(isValid => {
+        return isValid;
       });
   };
 
+  login() {
+    return fetch("http://localhost:8080/login", {
+      method: "post",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username: this.state.username,
+        password: this.state.password
+      })
+    })
+      .then(response => {
+        return response.text();
+      })
+      .then(key => {
+        bake_cookie("CUser", key);
+        this.setState({ redirect: true });
+      })
+      .catch(error => {
+        console.log(error);
+        this.setState({ error: true });
+      });
+  }
+
   handleSubmit(event) {
     event.preventDefault();
-    this.Validation().then(bool => {
-      if (bool) {
-        fetch("http://localhost:8080/login", {
-          method: "post",
-          mode: "cors",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            username: this.state.username,
-            password: this.state.password
-          })
-        })
-          .then(response => {
-            return response.text();
-          })
-          .then(key => {
-            bake_cookie("CUser", key);
-          })
-          .catch(error => {
-            console.log(error);
-          });
-        console.log(read_cookie("CUser"));
-        this.setState({ redirect: true });
+    this.Validation().then(isValid => {
+      if (isValid) {
+        this.login();
       } else {
         this.setState({ error: true });
       }
