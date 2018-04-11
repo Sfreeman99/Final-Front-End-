@@ -23,6 +23,9 @@ body {
   margin-left: 170px;
   margin-top: 40px;
 }
+#logout-button-positon {
+  margin-left: 989px;
+}
 /* 
   Checks and sees if the screen is bigger than 1600px
   if it is then it changes the padding to the following 
