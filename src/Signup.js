@@ -62,7 +62,7 @@ class Signup extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   componentDidMount() {
-    if (getToken() === true) {
+    if (getToken()) {
       this.setState({ redirect: true });
     }
   }
@@ -156,11 +156,11 @@ class Signup extends Component {
         })
         .then(key => {
           bake_cookie("CUser", key);
+          this.setState({ redirect: true });
         })
         .catch(error => {
           console.log(error);
         });
-      this.setState({ redirect: true });
     }
   }
 

@@ -26,12 +26,7 @@ class App extends Component {
     return (
       <Router>
         <div>
-          <Route
-            path="/"
-            component={() => {
-              return <Redirect to="/signup" />;
-            }}
-          />
+          <Route exact path="/" component={Signup} />
           <Route path="/login" component={Login} />
           <PrivateRoute path="/accountSummary" component={AccountSummary} />
           <Route path="/signup" component={Signup} />
