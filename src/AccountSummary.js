@@ -53,6 +53,7 @@ class AccountSummary extends Component {
     this.transactions = this.transactions.bind(this);
     this.Logout = this.Logout.bind(this);
   }
+
   componentDidMount() {
     fetch("http://localhost:8080/accountSummary", {
       method: "post",
@@ -181,12 +182,22 @@ class AccountSummary extends Component {
               >
                 Logout
               </button>
-              <h1 class="display-4">CashIt</h1>
-              <p class="lead">
+              <button
+                id="logout-button-positon"
+                className="btn btn-danger btn-lg"
+                onClick={e => {
+                  e.preventDefault();
+                  alert("Delete was pressed");
+                }}
+              >
+                Delete Account
+              </button>
+              <h1 className="display-4">CashIt</h1>
+              <p className="lead">
                 Hello {this.state.userInfo.username}! Your balance is{" "}
                 {"$" + (this.state.userInfo.balance / 100).toFixed(2)}
               </p>
-              <hr class="my-4" />
+              <hr className="my-4" />
             </div>
           </div>
           <div className="container">
