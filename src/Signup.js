@@ -185,7 +185,7 @@ class Signup extends Component {
                 <hr className="my-3" />
                 <p>If you are a current member:</p>
                 <p className="lead">
-                  <Link to="/login" className="btn btn-primary">
+                  <Link id="login" to="/login" className="btn btn-primary">
                     Login
                   </Link>
                 </p>
@@ -308,7 +308,11 @@ class Signup extends Component {
                   </div>
                 </div>
 
-                <button className="btn btn-primary" type="submit">
+                <button
+                  id="SignupUser"
+                  className="btn btn-primary"
+                  type="submit"
+                >
                   Signup
                 </button>
               </form>

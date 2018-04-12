@@ -48,7 +48,11 @@ const DeleteAccount = props => {
               >
                 Close
               </button>
-              <button type="submit" className="btn btn-danger">
+              <button
+                id="comfirm_delete"
+                type="submit"
+                className="btn btn-danger"
+              >
                 Delete Account
               </button>
             </div>
@@ -239,10 +243,10 @@ class AccountSummary extends Component {
       return (
         <div>
           <div className="container">
-            <div class="jumbotron">
+            <div className="jumbotron">
               <button
-                id="logout-button-position"
-                className="btn btn-primary"
+                id="logout"
+                className="btn btn-primary logout-button-position "
                 onClick={e => this.Logout(e)}
               >
                 Logout
@@ -257,9 +261,9 @@ class AccountSummary extends Component {
                 Delete Account
               </button> */}
               <button
-                id="logout-button-position"
+                id="delete_account"
                 type="button"
-                class="btn btn-danger"
+                className="btn btn-danger logout-button-position"
                 data-toggle="modal"
                 data-target="#DeleteAccount"
               >
@@ -308,7 +312,11 @@ class AccountSummary extends Component {
                             </div>
                           </div>
                         </p>
-                        <button type="submit" class="btn btn-primary">
+                        <button
+                          id="deposit"
+                          type="submit"
+                          class="btn btn-primary"
+                        >
                           Deposit
                         </button>
                       </form>
@@ -342,7 +350,11 @@ class AccountSummary extends Component {
                             </div>
                           </div>
                         </p>
-                        <button type="submit" class="btn btn-primary">
+                        <button
+                          id="withdraw"
+                          type="submit"
+                          class="btn btn-primary"
+                        >
                           Withdraw
                         </button>
                       </form>

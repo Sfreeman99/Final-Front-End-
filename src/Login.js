@@ -97,7 +97,7 @@ class Login extends Component {
                 "form-control input-form " +
                 (this.state.error ? "is-invalid" : "")
               }
-              id="Username "
+              id="Username"
               placeholder="Username"
               name="username"
               value={this.state.username}
@@ -111,7 +111,7 @@ class Login extends Component {
           </div>
         </div>
         <div className="form-group col-lg-4 offset-lg-4">
-          <label htmlFor="inputPassword3" className="col-lg-2 col-form-label">
+          <label htmlFor="Password" className="col-lg-2 col-form-label">
             Password
           </label>
           <div className="col-lg-12">
@@ -121,7 +121,7 @@ class Login extends Component {
                 "form-control input-form " +
                 (this.state.error ? "is-invalid" : "")
               }
-              id="inputPassword3"
+              id="Password"
               placeholder="Password"
               value={this.state.password}
               name="password"
@@ -139,8 +139,12 @@ class Login extends Component {
           <Link className="btn btn-danger btn-lg" to="/signup">
             Back
           </Link>
-          <button className="btn btn-primary btn-lg center" type="submit">
-            Submit
+          <button
+            id="login"
+            className="btn btn-primary btn-lg center"
+            type="submit"
+          >
+            Login
           </button>
         </div>
       </form>
