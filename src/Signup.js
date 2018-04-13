@@ -18,7 +18,18 @@ const Form = props => {
     </div>
   );
 };
-
+const SignUpForm = props => {
+  return (
+    <form className="needs-validation" onSubmit={props.onSubmit}>
+      {props.children}
+      <div>
+        <button id="SignupUser" className="btn btn-primary" type="submit">
+          Signup
+        </button>
+      </div>
+    </form>
+  );
+};
 const UsernameTaken = username => {
   return fetch("http://localhost:8080/usernameexists", {
     method: "post",
@@ -209,10 +220,7 @@ class Signup extends Component {
                   <h3>Signup </h3>
                 </div>
                 <div className="card-body">
-                  <form
-                    className="needs-validation"
-                    onSubmit={this.handleSubmit}
-                  >
+                  <SignUpForm onSubmit={this.handleSubmit}>
                     <Form
                       hasError={this.state.errors.first_name_bool}
                       errorMessage={this.state.errors.first_name_errors}
@@ -278,16 +286,7 @@ class Signup extends Component {
                         this.setState({ password2: event.currentTarget.value });
                       }}
                     />
-                    <div>
-                      <button
-                        id="SignupUser"
-                        className="btn btn-primary"
-                        type="submit"
-                      >
-                        Signup
-                      </button>
-                    </div>
-                  </form>
+                  </SignUpForm>
                   <hr className="my-3" />
                   <p>If you are a current member:</p>
                   <p className="lead">
