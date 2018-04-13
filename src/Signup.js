@@ -2,6 +2,22 @@ import React, { Component } from "react";
 import { bake_cookie } from "sfcookies";
 import { getToken } from "./CookieInformation";
 import { Redirect, Link } from "react-router-dom";
+import "./Signup.css";
+
+const Form = props => {
+  return (
+    <div className={"form-group " + (props.hasError ? "has-danger" : "")}>
+      <input
+        type={props.type}
+        className={"form-control " + (props.hasError ? "is-invalid" : null)}
+        id={props.id}
+        placeholder={props.placeholder}
+        onChange={props.onChange}
+      />
+      <div className="invalid-feedback">{props.errorMessage}</div>
+    </div>
+  );
+};
 
 const UsernameTaken = username => {
   return fetch("http://localhost:8080/usernameexists", {
@@ -34,7 +50,10 @@ const passwordMustBeAtLeast10Char = password1 => {
   return true;
 };
 const showPasswordErrors = errorlist => {
-  return errorlist.map(error => <li> {error} </li>);
+  const errors = errorlist.map(error => {
+    return <li> {error} </li>;
+  });
+  return <ul>{errors}</ul>;
 };
 class Signup extends Component {
   constructor(props) {
@@ -176,146 +195,113 @@ class Signup extends Component {
       return (
         <div className="container">
           <div className="row form-padd">
-            <div className="col-lg-6">
+            <div className="col-lg-12">
               <div className="jumbotron">
                 <h1 className="display-4">CashIt</h1>
                 <p className="lead">
                   Where you get money from Family, Friends, and others!
                 </p>
-                <hr className="my-3" />
-                <p>If you are a current member:</p>
-                <p className="lead">
-                  <Link id="login" to="/login" className="btn btn-primary">
-                    Login
-                  </Link>
-                </p>
               </div>
             </div>
-            <div className="col-lg-6">
-              <h2> Signup </h2>
-              <form className="needs-validation" onSubmit={this.handleSubmit}>
-                <div className="form-group">
-                  <label htmlFor="FirstName">First Name</label>
-                  <input
-                    type="text"
-                    className={
-                      "form-control " +
-                      (this.state.errors.first_name_bool ? "is-invalid" : "")
-                    }
-                    id="FirstName"
-                    placeholder="First Name"
-                    onChange={event => {
-                      this.setState({ first_name: event.currentTarget.value });
-                    }}
-                  />
-                  <div className="invalid-feedback">
-                    {this.state.errors.first_name_errors}
-                  </div>
+            <div className="offset-lg-3 col-lg-6">
+              <div className="card">
+                <div className="card-header">
+                  <h3>Signup </h3>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="LastName">Last Name</label>
-                  <input
-                    type="text"
-                    className={
-                      "form-control " +
-                      (this.state.errors.last_name_bool ? "is-invalid" : "")
-                    }
-                    id="LastName"
-                    placeholder="Last Name"
-                    onChange={event => {
-                      this.setState({ last_name: event.currentTarget.value });
-                    }}
-                  />
-                  <div className="invalid-feedback">
-                    {this.state.errors.last_name_errors}
-                  </div>
+                <div className="card-body">
+                  <form
+                    className="needs-validation"
+                    onSubmit={this.handleSubmit}
+                  >
+                    <Form
+                      hasError={this.state.errors.first_name_bool}
+                      errorMessage={this.state.errors.first_name_errors}
+                      type={"text"}
+                      id={"FirstName"}
+                      placeholder={"First Name"}
+                      onChange={event => {
+                        this.setState({
+                          first_name: event.currentTarget.value
+                        });
+                      }}
+                    />
+                    <Form
+                      hasError={this.state.errors.last_name_bool}
+                      errorMessage={this.state.errors.last_name_errors}
+                      type={"text"}
+                      id={"LastName"}
+                      placeholder={"Last Name"}
+                      onChange={event => {
+                        this.setState({
+                          last_name: event.currentTarget.value
+                        });
+                      }}
+                    />
+                    <Form
+                      hasError={this.state.errors.email_bool}
+                      errorMessage={this.state.errors.email_errors}
+                      type={"email"}
+                      id={"Email"}
+                      placeholder={"Email"}
+                      onChange={event => {
+                        this.setState({ email: event.currentTarget.value });
+                      }}
+                    />
+                    <Form
+                      hasError={this.state.errors.username_bool}
+                      errorMessage={this.state.errors.username_errors}
+                      type={"text"}
+                      id={"Username"}
+                      placeholder={"Username"}
+                      onChange={event => {
+                        this.setState({ username: event.currentTarget.value });
+                      }}
+                    />
+                    <Form
+                      hasError={this.state.errors.passworderrorsbool}
+                      type={"password"}
+                      id={"Password1"}
+                      placeholder={"Password"}
+                      onChange={event => {
+                        this.setState({ password1: event.currentTarget.value });
+                      }}
+                    />
+                    <Form
+                      hasError={this.state.errors.passworderrorsbool}
+                      errorMessage={showPasswordErrors(
+                        this.state.errors.passworderrors
+                      )}
+                      type={"password"}
+                      id={"Password2"}
+                      placeholder={"Repeat Password"}
+                      onChange={event => {
+                        this.setState({ password2: event.currentTarget.value });
+                      }}
+                    />
+                    <div>
+                      <button
+                        id="SignupUser"
+                        className="btn btn-primary"
+                        type="submit"
+                      >
+                        Signup
+                      </button>
+                    </div>
+                  </form>
+                  <hr className="my-3" />
+                  <p>If you are a current member:</p>
+                  <p className="lead">
+                    <Link
+                      id="login"
+                      to="/login"
+                      className="btn btn-sm btn-default"
+                    >
+                      Login
+                    </Link>{" "}
+                    For existing customers.
+                  </p>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="Email">Email address</label>
-                  <input
-                    type="email"
-                    className={
-                      "form-control " +
-                      (this.state.errors.email_bool ? "is-invalid" : "")
-                    }
-                    id="Email"
-                    placeholder="Enter email"
-                    onChange={event => {
-                      this.setState({ email: event.currentTarget.value });
-                    }}
-                  />
-                  <div className="invalid-feedback">
-                    {this.state.errors.email_errors}
-                  </div>
-
-                  {/* <small id="emailHelp" className="form-text text-muted">
-            We'll never share your email with anyone else.
-          </small> */}
-                </div>
-                <div className="form-group">
-                  <label htmlFor="Username">Username</label>
-                  <input
-                    type="text"
-                    className={
-                      "form-control " +
-                      (this.state.errors.username_bool ? "is-invalid" : "")
-                    }
-                    id="Username"
-                    placeholder="Username"
-                    onChange={event => {
-                      this.setState({ username: event.currentTarget.value });
-                    }}
-                  />
-                  <div className="invalid-feedback">
-                    {" "}
-                    {this.state.errors.username_errors}{" "}
-                  </div>
-                </div>
-                <div className="form-group">
-                  <label htmlFor="Password1">Password</label>
-                  <input
-                    type="password"
-                    className={
-                      "form-control " +
-                      (this.state.errors.passworderrorsbool ? "is-invalid" : "")
-                    }
-                    id="Password1"
-                    placeholder="Password"
-                    onChange={event => {
-                      this.setState({ password1: event.target.value });
-                    }}
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="Password2">Password Repeat</label>
-                  <input
-                    type="password"
-                    className={
-                      "form-control " +
-                      (this.state.errors.passworderrorsbool ? "is-invalid" : "")
-                    }
-                    id="Password2"
-                    placeholder="Repeat Password"
-                    onChange={event => {
-                      this.setState({ password2: event.target.value });
-                    }}
-                  />
-                  <div className="invalid-feedback">
-                    {" "}
-                    <ul>
-                      {showPasswordErrors(this.state.errors.passworderrors)}{" "}
-                    </ul>
-                  </div>
-                </div>
-
-                <button
-                  id="SignupUser"
-                  className="btn btn-primary"
-                  type="submit"
-                >
-                  Signup
-                </button>
-              </form>
+              </div>
             </div>
           </div>
         </div>
