@@ -5159,7 +5159,7 @@
  .jumbotron {
    padding: 2rem 1rem;
    margin-bottom: 2rem;
-   background-color: #eee;
+   background-color: #00af66;
    border-radius: 0.3rem;
  }
  
@@ -10311,8 +10311,8 @@
  [type=email].form-control:focus,
  [type=tel].form-control:focus,
  [contenteditable].form-control:focus {
-   -webkit-box-shadow: inset 0 -2px 0 #2196F3;
-           box-shadow: inset 0 -2px 0 #2196F3;
+   -webkit-box-shadow: inset 0 -2px 0 #00af66;
+           box-shadow: inset 0 -2px 0 #00af66;
  }
  
  textarea[disabled], textarea[readonly],
