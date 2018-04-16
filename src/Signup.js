@@ -4,6 +4,15 @@ import { getToken } from "./CookieInformation";
 import { Redirect, Link } from "react-router-dom";
 import "./Signup.css";
 
+export const Navbar = () => {
+  return (
+    <nav className="navbar navbar-dark bg-success">
+      <a className="navbar-brand" href="#">
+        CashIt
+      </a>
+    </nav>
+  );
+};
 const Input = props => {
   return (
     <div className={"form-group " + (props.hasError ? "has-danger" : "")}>
@@ -216,91 +225,100 @@ class Signup extends Component {
       return <Redirect to="/accountSummary" />;
     } else {
       return (
-        <div className="container">
-          <div className="row form-padd">
-            <div className="col-lg-12">
+        <div>
+          <Navbar />
+          <div className="container">
+            <div className="row form-padd">
+              {/* <div className="col-lg-12">
               <div className="jumbotron">
                 <h1 className="display-4">CashIt</h1>
                 <p className="lead">
                   Where you get money from Family, Friends, and others!
                 </p>
               </div>
-            </div>
-            <div className="offset-lg-3 col-lg-6">
-              <div className="card">
-                <div className="card-header">
-                  <h3>Signup </h3>
-                </div>
-                <div className="card-body">
-                  <SignUpForm onSubmit={this.handleSubmit}>
-                    <Input
-                      hasError={this.state.errors.first_name_bool}
-                      errorMessage={this.state.errors.first_name_errors}
-                      type={"text"}
-                      id={"FirstName"}
-                      placeholder={"First Name"}
-                      onChange={event => {
-                        this.setState({
-                          first_name: event.currentTarget.value
-                        });
-                      }}
-                    />
-                    <Input
-                      hasError={this.state.errors.last_name_bool}
-                      errorMessage={this.state.errors.last_name_errors}
-                      type={"text"}
-                      id={"LastName"}
-                      placeholder={"Last Name"}
-                      onChange={event => {
-                        this.setState({
-                          last_name: event.currentTarget.value
-                        });
-                      }}
-                    />
-                    <Input
-                      hasError={this.state.errors.email_bool}
-                      errorMessage={this.state.errors.email_errors}
-                      type={"email"}
-                      id={"Email"}
-                      placeholder={"Email"}
-                      onChange={event => {
-                        this.setState({ email: event.currentTarget.value });
-                      }}
-                    />
-                    <Input
-                      hasError={this.state.errors.username_bool}
-                      errorMessage={this.state.errors.username_errors}
-                      type={"text"}
-                      id={"Username"}
-                      placeholder={"Username"}
-                      onChange={event => {
-                        this.setState({ username: event.currentTarget.value });
-                      }}
-                    />
-                    <Input
-                      hasError={this.state.errors.passworderrorsbool}
-                      type={"password"}
-                      id={"Password1"}
-                      placeholder={"Password"}
-                      onChange={event => {
-                        this.setState({ password1: event.currentTarget.value });
-                      }}
-                    />
-                    <Input
-                      hasError={this.state.errors.passworderrorsbool}
-                      errorMessage={showPasswordErrors(
-                        this.state.errors.passworderrors
-                      )}
-                      type={"password"}
-                      id={"Password2"}
-                      placeholder={"Repeat Password"}
-                      onChange={event => {
-                        this.setState({ password2: event.currentTarget.value });
-                      }}
-                    />
-                  </SignUpForm>
-                  <hr className="my-3" />
-                  <Login />
+            </div> */}
+              <div className="offset-lg-3 col-lg-6">
+                <div className="card">
+                  <div className="card-header">
+                    <h3>Signup </h3>
+                  </div>
+                  <div className="card-body">
+                    <SignUpForm onSubmit={this.handleSubmit}>
+                      <Input
+                        hasError={this.state.errors.first_name_bool}
+                        errorMessage={this.state.errors.first_name_errors}
+                        type={"text"}
+                        id={"FirstName"}
+                        placeholder={"First Name"}
+                        onChange={event => {
+                          this.setState({
+                            first_name: event.currentTarget.value
+                          });
+                        }}
+                      />
+                      <Input
+                        hasError={this.state.errors.last_name_bool}
+                        errorMessage={this.state.errors.last_name_errors}
+                        type={"text"}
+                        id={"LastName"}
+                        placeholder={"Last Name"}
+                        onChange={event => {
+                          this.setState({
+                            last_name: event.currentTarget.value
+                          });
+                        }}
+                      />
+                      <Input
+                        hasError={this.state.errors.email_bool}
+                        errorMessage={this.state.errors.email_errors}
+                        type={"email"}
+                        id={"Email"}
+                        placeholder={"Email"}
+                        onChange={event => {
+                          this.setState({ email: event.currentTarget.value });
+                        }}
+                      />
+                      <Input
+                        hasError={this.state.errors.username_bool}
+                        errorMessage={this.state.errors.username_errors}
+                        type={"text"}
+                        id={"Username"}
+                        placeholder={"Username"}
+                        onChange={event => {
+                          this.setState({
+                            username: event.currentTarget.value
+                          });
+                        }}
+                      />
+                      <Input
+                        hasError={this.state.errors.passworderrorsbool}
+                        type={"password"}
+                        id={"Password1"}
+                        placeholder={"Password"}
+                        onChange={event => {
+                          this.setState({
+                            password1: event.currentTarget.value
+                          });
+                        }}
+                      />
+                      <Input
+                        hasError={this.state.errors.passworderrorsbool}
+                        errorMessage={showPasswordErrors(
+                          this.state.errors.passworderrors
+                        )}
+                        type={"password"}
+                        id={"Password2"}
+                        placeholder={"Repeat Password"}
+                        onChange={event => {
+                          this.setState({
+                            password2: event.currentTarget.value
+                          });
+                        }}
+                      />
+                    </SignUpForm>
+                    <hr className="my-3" />
+                    <Login />
+                  </div>
                 </div>
               </div>
             </div>
