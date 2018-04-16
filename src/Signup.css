@@ -1,0 +1,41 @@
+/* .form-control {
+  border-radius: 20px;
+} */
+
+/* .form-group {
+  margin-bottom: 1rem;
+  margin-right: 75px;
+  margin-left: 75px;
+} */
+
+.card {
+  /* width: 30em; */
+  background-color: #ffffff;
+  margin-bottom: 25px;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: white;
+}
+p {
+  color: white;
+}
+.card-header > h3 {
+  color: white;
+}
+.btn-primary {
+  background-color: #00af66;
+}
+.btn-default {
+  color: #00af66;
+}
+.card-header {
+  background-color: #00af66;
+}
+.card-body > div > p.lead {
+  color: black;
+}
