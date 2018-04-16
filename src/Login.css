@@ -1,0 +1,71 @@
+.card.login {
+  margin-top: 150px;
+}
+.card-header > h3.login {
+  color: white;
+  margin-left: 200px;
+  margin-right: 200px;
+}
+.button-position {
+  margin-top: 25px;
+  margin-left: 150px;
+}
+@media (max-width: 375px) and (min-width: 321px) {
+  .button-position {
+    margin-left: 60px;
+  }
+}
+@media (max-width: 500px) and (min-width: 376px) {
+  .button-position {
+    margin-left: 80px;
+  }
+}
+@media (max-width: 775px) and (min-width: 501px) {
+  .button-position {
+    margin-left: 200px;
+  }
+}
+@media (max-width: 1024px) and (min-width: 776px) {
+  .button-position {
+    margin-left: 100px;
+  }
+}
+#back-button {
+  margin-right: 10px;
+}
+@media (max-width: 320px) {
+  .card-header > h3.login {
+    color: white;
+    margin-left: 30px;
+    margin-right: 30px;
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+  .button-position {
+    margin-left: 25px;
+  }
+}
+@media (max-width: 500px) and (min-width: 321px) {
+  .card-header > h3.login {
+    color: white;
+    margin-left: 30px;
+    margin-right: 30px;
+    padding-left: 71px;
+    padding-right: 50px;
+  }
+}
+@media (max-width: 775px) and (min-width: 501px) {
+  .card-header > h3.login {
+    color: white;
+    margin-left: 250px;
+    margin-right: 300px;
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 776px) {
+  .card-header > h3.login {
+    color: white;
+    margin-left: 150px;
+    margin-right: 180px;
+  }
+}
