@@ -4,7 +4,7 @@ import { getToken } from "./CookieInformation";
 import { Redirect, Link } from "react-router-dom";
 import "./Signup.css";
 
-const Form = props => {
+const Input = props => {
   return (
     <div className={"form-group " + (props.hasError ? "has-danger" : "")}>
       <input
@@ -15,6 +15,18 @@ const Form = props => {
         onChange={props.onChange}
       />
       <div className="invalid-feedback">{props.errorMessage}</div>
+    </div>
+  );
+};
+const Login = () => {
+  return (
+    <div>
+      <p className="lead">
+        <Link id="login" to="/login" className="btn btn-sm btn-default">
+          Login
+        </Link>{" "}
+        For existing customers.
+      </p>
     </div>
   );
 };
@@ -221,7 +233,7 @@ class Signup extends Component {
                 </div>
                 <div className="card-body">
                   <SignUpForm onSubmit={this.handleSubmit}>
-                    <Form
+                    <Input
                       hasError={this.state.errors.first_name_bool}
                       errorMessage={this.state.errors.first_name_errors}
                       type={"text"}
@@ -233,7 +245,7 @@ class Signup extends Component {
                         });
                       }}
                     />
-                    <Form
+                    <Input
                       hasError={this.state.errors.last_name_bool}
                       errorMessage={this.state.errors.last_name_errors}
                       type={"text"}
@@ -245,7 +257,7 @@ class Signup extends Component {
                         });
                       }}
                     />
-                    <Form
+                    <Input
                       hasError={this.state.errors.email_bool}
                       errorMessage={this.state.errors.email_errors}
                       type={"email"}
@@ -255,7 +267,7 @@ class Signup extends Component {
                         this.setState({ email: event.currentTarget.value });
                       }}
                     />
-                    <Form
+                    <Input
                       hasError={this.state.errors.username_bool}
                       errorMessage={this.state.errors.username_errors}
                       type={"text"}
@@ -265,7 +277,7 @@ class Signup extends Component {
                         this.setState({ username: event.currentTarget.value });
                       }}
                     />
-                    <Form
+                    <Input
                       hasError={this.state.errors.passworderrorsbool}
                       type={"password"}
                       id={"Password1"}
@@ -274,7 +286,7 @@ class Signup extends Component {
                         this.setState({ password1: event.currentTarget.value });
                       }}
                     />
-                    <Form
+                    <Input
                       hasError={this.state.errors.passworderrorsbool}
                       errorMessage={showPasswordErrors(
                         this.state.errors.passworderrors
@@ -288,17 +300,7 @@ class Signup extends Component {
                     />
                   </SignUpForm>
                   <hr className="my-3" />
-                  <p>If you are a current member:</p>
-                  <p className="lead">
-                    <Link
-                      id="login"
-                      to="/login"
-                      className="btn btn-sm btn-default"
-                    >
-                      Login
-                    </Link>{" "}
-                    For existing customers.
-                  </p>
+                  <Login />
                 </div>
               </div>
             </div>
