@@ -4,12 +4,27 @@ import { getToken } from "./CookieInformation";
 import { Redirect, Link } from "react-router-dom";
 import "./Signup.css";
 
-export const Navbar = () => {
+export const Navbar = props => {
   return (
-    <nav className="navbar navbar-dark bg-success">
-      <a className="navbar-brand" href="#">
-        CashIt
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+      <a class="navbar-brand" href="#">
+        Cash It
       </a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon" />
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <div className="navbar-nav">{props.children}</div>
+      </div>
+      <span class="navbar-text">{props.username}</span>
     </nav>
   );
 };

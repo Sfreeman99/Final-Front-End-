@@ -1,0 +1,8 @@
+div.container > span {
+  font-size: 70px;
+  color: #00af66;
+  margin-left: 250px;
+}
+.card-header {
+  color: white;
+}

@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import { read_cookie, delete_cookie } from "sfcookies";
 import _ from "lodash";
+import { Navbar } from "./Signup";
+import { NavLink } from "react-router-dom";
+import "./AccountSummary.css";
 
 // function Transactions(props) {
 //   const transactions = props.transactions.map(transaction => (
@@ -15,7 +18,7 @@ const DeleteAccount = props => {
       <div
         className="modal fade"
         id="DeleteAccount"
-        tabindex="-1"
+        tabIndex="-1"
         role="dialog"
         aria-labelledby="DeleteAccountLabel"
         aria-hidden="true"
@@ -75,7 +78,7 @@ const Transactions = props => {
     );
   });
   return (
-    <table class="table">
+    <table className="table">
       <thead>
         <tr>
           <th scope="col">Transaction ID</th>
@@ -155,6 +158,7 @@ class AccountSummary extends Component {
       .then(response => response.json())
       .then(transaction => {
         // window.location.reload(true);
+        console.log(transaction);
         this.setState({
           transactions: _.concat(this.state.transactions, transaction),
           userInfo: _.update(this.state.userInfo, "balance", currentBalance => {
@@ -195,6 +199,7 @@ class AccountSummary extends Component {
       .catch(error => {
         console.log(error);
       });
+    e.currentTarget.reset();
   }
   transactions(id) {
     return fetch(
@@ -242,41 +247,34 @@ class AccountSummary extends Component {
     } else {
       return (
         <div>
+          <DeleteAccount onSubmit={this.handleDelete} />
+          <Navbar username={this.state.userInfo.username}>
+            <NavLink exact to="accountSummary" className="nav-item nav-link">
+              Account Summary <span class="sr-only">(current)</span>
+            </NavLink>
+            <a
+              id="logout"
+              className="nav-item nav-link"
+              onClick={e => this.Logout(e)}
+              href=""
+            >
+              Logout
+            </a>
+            <a
+              id="delete_account"
+              className="nav-item nav-link"
+              data-toggle="modal"
+              data-target="#DeleteAccount"
+              href=""
+            >
+              Delete Account
+            </a>
+          </Navbar>
+
           <div className="container">
-            <div className="jumbotron">
-              <button
-                id="logout"
-                className="btn btn-primary logout-button-position "
-                onClick={e => this.Logout(e)}
-              >
-                Logout
-              </button>
-              {/* <button
-                type="button"
-                id="logout-button-positon"
-                className="btn btn-danger btn-lg"
-                data-toggle="modal"
-                data-target="#exampleModal"
-              >
-                Delete Account
-              </button> */}
-              <button
-                id="delete_account"
-                type="button"
-                className="btn btn-danger logout-button-position"
-                data-toggle="modal"
-                data-target="#DeleteAccount"
-              >
-                Delete Account
-              </button>
-              <h1 className="display-4">CashIt</h1>
-              <p className="lead">
-                Hello {this.state.userInfo.username}! Your balance is{" "}
-                {"$" + (this.state.userInfo.balance / 100).toFixed(2)}
-              </p>
-              <hr className="my-4" />
-              <DeleteAccount onSubmit={this.handleDelete} />
-            </div>
+            <span itemID="boo">
+              {"Balance: $" + (this.state.userInfo.balance / 100).toFixed(2)}
+            </span>
           </div>
           <div className="container">
             <div className="row">
@@ -286,26 +284,28 @@ class AccountSummary extends Component {
               </div>
               <div className="col-6">
                 <div className="col-12">
-                  <div class="card">
-                    <div class="card-header">Deposit</div>
-                    <div class="card-body">
+                  <div className="card">
+                    <div className="card-header">Deposit</div>
+                    <div className="card-body">
                       <div className="card-title">Deposit Amount</div>
                       <form onSubmit={this.handleDeposit}>
-                        <p class="card-text">
+                        <p className="card-text">
                           <div className="input-group mb-3">
                             <div className="input-group-prepend">
                               <span className="input-group-text">$</span>
                             </div>
                             <input
                               name="deposit"
-                              type="text"
+                              type="number"
                               className="form-control"
                               aria-label="Amount (to the nearest dollar)"
                               onChange={e =>
                                 this.setState({
-                                  deposit: e.currentTarget.value * 100
+                                  deposit: Number(e.currentTarget.value) * 100
                                 })
                               }
+                              min="0"
+                              max="9999"
                             />
                             <div className="input-group-append">
                               <span className="input-group-text">.00</span>
@@ -315,7 +315,7 @@ class AccountSummary extends Component {
                         <button
                           id="deposit"
                           type="submit"
-                          class="btn btn-primary"
+                          className="btn btn-primary"
                         >
                           Deposit
                         </button>
@@ -324,26 +324,28 @@ class AccountSummary extends Component {
                   </div>
                 </div>
                 <div className="col-12">
-                  <div class="card">
+                  <div className="card">
                     <div class="card-header">Withdraw</div>
-                    <div class="card-body">
+                    <div className="card-body">
                       <div className="card-title">Withdraw Amount</div>
                       <form onSubmit={this.handleWithdraw}>
-                        <p class="card-text">
+                        <p className="card-text">
                           <div className="input-group mb-3">
                             <div className="input-group-prepend">
                               <span className="input-group-text">$</span>
                             </div>
                             <input
                               name="withdraw"
-                              type="text"
+                              type="number"
                               className="form-control"
                               aria-label="Amount (to the nearest dollar)"
                               onChange={e =>
                                 this.setState({
-                                  withdraw: e.currentTarget.value * 100
+                                  withdraw: Number(e.currentTarget.value) * 100
                                 })
                               }
+                              min="1"
+                              max={this.state.userInfo.balance / 100}
                             />
                             <div className="input-group-append">
                               <span className="input-group-text">.00</span>
@@ -353,7 +355,7 @@ class AccountSummary extends Component {
                         <button
                           id="withdraw"
                           type="submit"
-                          class="btn btn-primary"
+                          className="btn btn-primary"
                         >
                           Withdraw
                         </button>
