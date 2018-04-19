@@ -6,12 +6,12 @@ import "./Signup.css";
 
 export const Navbar = props => {
   return (
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-      <a class="navbar-brand" href="#">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-success">
+      <a className="navbar-brand" href="">
         Cash It
       </a>
       <button
-        class="navbar-toggler"
+        className="navbar-toggler"
         type="button"
         data-toggle="collapse"
         data-target="#navbarNav"
@@ -19,12 +19,12 @@ export const Navbar = props => {
         aria-expanded="false"
         aria-label="Toggle navigation"
       >
-        <span class="navbar-toggler-icon" />
+        <span className="navbar-toggler-icon" />
       </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
+      <div className="collapse navbar-collapse" id="navbarNav">
         <div className="navbar-nav">{props.children}</div>
       </div>
-      <span class="navbar-text">{props.username}</span>
+      <span className="navbar-text">{props.username}</span>
     </nav>
   );
 };
