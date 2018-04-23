@@ -3,7 +3,7 @@ import { Redirect } from "react-router-dom";
 import { read_cookie, delete_cookie } from "sfcookies";
 import _ from "lodash";
 import { Navbar } from "./Signup";
-import { NavLink } from "react-router-dom";
+import { Route, NavLink, BrowserRouter as Router } from "react-router-dom";
 import "./AccountSummary.css";
 
 // function Transactions(props) {
@@ -91,11 +91,15 @@ const Transactions = props => {
     </table>
   );
 };
-class AccountSummary extends Component {
+export class Requests extends Component {
+  render() {
+    return <div> Requests </div>;
+  }
+}
+export class AccountSummary extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cookieDeleted: false,
       userInfo: {},
       key: "",
       loaded: false,
@@ -109,20 +113,8 @@ class AccountSummary extends Component {
     this.handleDeposit = this.handleDeposit.bind(this);
     this.handleWithdraw = this.handleWithdraw.bind(this);
     this.transactions = this.transactions.bind(this);
-    this.Logout = this.Logout.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
   }
-  handleDelete(e) {
-    e.preventDefault();
-    document.getElementById("close").click();
-    fetch(`http://localhost:8080/delete/${this.state.userInfo.id}`, {
-      method: "delete",
-      mode: "cors"
-    }).then(() => {
-      delete_cookie("CUser");
-      this.setState({ cookieDeleted: true });
-    });
-  }
+
   componentDidMount() {
     fetch("http://localhost:8080/accountSummary", {
       method: "post",
@@ -220,27 +212,9 @@ class AccountSummary extends Component {
         this.setState({ transactions: data });
       });
   }
-  Logout(e) {
-    e.preventDefault();
-    fetch("http://localhost:8080/logout", {
-      method: "post",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: read_cookie("CUser")
-    })
-      .then(response => {
-        delete_cookie("CUser");
-        window.location.reload(true);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }
   render() {
     if (!this.state.loaded) {
-      return <div className="alert alert-danger"> key not loaded </div>;
+      return null;
     }
     if (this.state.cookieDeleted) {
       return <Redirect to="/signup" />;
@@ -248,28 +222,6 @@ class AccountSummary extends Component {
       return (
         <div>
           <DeleteAccount onSubmit={this.handleDelete} />
-          <Navbar username={this.state.userInfo.username}>
-            <NavLink exact to="accountSummary" className="nav-item nav-link">
-              Account Summary <span class="sr-only">(current)</span>
-            </NavLink>
-            <a
-              id="logout"
-              className="nav-item nav-link"
-              onClick={e => this.Logout(e)}
-              href=""
-            >
-              Logout
-            </a>
-            <a
-              id="delete_account"
-              className="nav-item nav-link"
-              data-toggle="modal"
-              data-target="#DeleteAccount"
-              href=""
-            >
-              Delete Account
-            </a>
-          </Navbar>
 
           <div className="container">
             <span itemID="boo">
@@ -304,7 +256,7 @@ class AccountSummary extends Component {
                                   deposit: Number(e.currentTarget.value) * 100
                                 })
                               }
-                              min="0"
+                              min="1"
                               max="9999"
                             />
                             <div className="input-group-append">
@@ -371,4 +323,98 @@ class AccountSummary extends Component {
     }
   }
 }
-export default AccountSummary;
+export class Home extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      cookieDeleted: false,
+      userInfo: {}
+    };
+    this.Logout = this.Logout.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+  }
+  componentDidMount() {
+    fetch("http://localhost:8080/accountSummary", {
+      method: "post",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(read_cookie("CUser"))
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(accountInfo => {
+        console.log(accountInfo);
+        this.setState({ userInfo: accountInfo, loaded: true });
+      });
+  }
+  Logout(e) {
+    e.preventDefault();
+    fetch("http://localhost:8080/logout", {
+      method: "post",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: read_cookie("CUser")
+    })
+      .then(response => {
+        delete_cookie("CUser");
+        window.location.reload(true);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+  handleDelete(e) {
+    e.preventDefault();
+    document.getElementById("close").click();
+    fetch(`http://localhost:8080/delete/${this.state.userInfo.id}`, {
+      method: "delete",
+      mode: "cors"
+    }).then(() => {
+      delete_cookie("CUser");
+      this.setState({ cookieDeleted: true });
+    });
+  }
+  render() {
+    return (
+      <div>
+        <Navbar isBusiness={false} username={this.state.userInfo.username}>
+          <NavLink
+            exact
+            to="accountSummary"
+            className="nav-item nav-link"
+            activeClassName="active"
+          >
+            Account Summary <span class="sr-only">(current)</span>
+          </NavLink>
+          <NavLink to="requests" className="nav-item nav-link">
+            Requests
+          </NavLink>
+          <a
+            id="logout"
+            className="nav-item nav-link"
+            onClick={e => this.Logout(e)}
+            href=""
+          >
+            Logout
+          </a>
+          <a
+            id="delete_account"
+            className="nav-item nav-link"
+            data-toggle="modal"
+            data-target="#DeleteAccount"
+            href=""
+          >
+            Delete Account
+          </a>
+        </Navbar>
+        <Route path="/home/accountSummary" component={AccountSummary} />
+        <Route path="/home/requests" component={Requests} />
+      </div>
+    );
+  }
+}
