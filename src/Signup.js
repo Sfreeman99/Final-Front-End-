@@ -79,6 +79,34 @@ const Login = () => {
     </div>
   );
 };
+const BusinessLogin = () => {
+  return (
+    <div>
+      <p className="lead">
+        <Link id="login" to="/login" className="btn btn-sm btn-default">
+          Login
+        </Link>{" "}
+        For existing business.
+      </p>
+    </div>
+  );
+};
+const BusinessSignUp = () => {
+  return (
+    <div>
+      <p className="lead">
+        <Link
+          id="login"
+          to="/business/signup"
+          className="btn btn-sm btn-default"
+        >
+          Click Here
+        </Link>{" "}
+        For Business Signup or Login.
+      </p>
+    </div>
+  );
+};
 const SignUpForm = props => {
   return (
     <form className="needs-validation" onSubmit={props.onSubmit}>
@@ -127,7 +155,7 @@ const showPasswordErrors = errorlist => {
   });
   return <ul>{errors}</ul>;
 };
-class Signup extends Component {
+export class Signup extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -269,14 +297,6 @@ class Signup extends Component {
           <Navbar isBusiness={false} />
           <div className="container">
             <div className="row form-padd">
-              {/* <div className="col-lg-12">
-              <div className="jumbotron">
-                <h1 className="display-4">CashIt</h1>
-                <p className="lead">
-                  Where you get money from Family, Friends, and others!
-                </p>
-              </div>
-            </div> */}
               <div className="offset-lg-3 col-lg-6">
                 <div className="card">
                   <div className="card-header">
@@ -358,6 +378,7 @@ class Signup extends Component {
                     </SignUpForm>
                     <hr className="my-3" />
                     <Login />
+                    <BusinessSignUp />
                   </div>
                 </div>
               </div>
@@ -368,4 +389,198 @@ class Signup extends Component {
     }
   }
 }
-export default Signup;
+
+export class BusinessSignup extends Component {
+  constructor() {
+    super();
+    this.state = {
+      owner_first_name: "",
+      owner_last_name: "",
+      business_brand: "",
+      email: "",
+      password1: "",
+      password2: "",
+      errors: {
+        has_error: false,
+        email_errors: "",
+        email_bool: false,
+        owner_first_name_errors: "",
+        owner_first_name_bool: false,
+        owner_last_name_errors: "",
+        owner_last_name_bool: false,
+        business_brand_errors: "",
+        business_brand_bool: false,
+        passworderrors: [],
+        passworderrorsbool: false
+      }
+    };
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.BusinessValidation = this.BusinessValidation.bind(this);
+  }
+
+  BusinessValidation = () => {
+    var invalidbool = false;
+    var newerrors = {
+      has_error: false,
+      email_errors: "",
+      email_bool: false,
+      owner_first_name_errors: "",
+      owner_first_name_bool: false,
+      owner_last_name_errors: "",
+      owner_last_name_bool: false,
+      passworderrors: [],
+      passworderrorsbool: false
+    };
+    if (this.state.owner_first_name === "") {
+      newerrors.has_error = true;
+      newerrors.owner_first_name_bool = true;
+      newerrors.owner_first_name_errors = "You must provide your First Name";
+      invalidbool = true;
+    }
+    if (this.state.owner_last_name === "") {
+      newerrors.has_error = true;
+      newerrors.owner_last_name_bool = true;
+      newerrors.owner_last_name_errors = "You must provide your Last Name";
+      invalidbool = true;
+    }
+    if (this.state.email.indexOf("@") === -1) {
+      newerrors.has_error = true;
+      newerrors.email_bool = true;
+      newerrors.email_errors = "You must provide your Email";
+      invalidbool = true;
+    }
+    // if (this.state.username === "") {
+    //   newerrors.has_error = true;
+    //   newerrors.username_bool = true;
+    //   newerrors.username_errors = "Please provide a username";
+    //   invalidbool = true;
+    // } else {
+    //   UsernameTaken(this.state.username).then(bool => {
+    //     if (bool) {
+    //       var newerrors = { ...this.state.errors };
+    //       newerrors.has_error = true;
+    //       newerrors.username_bool = true;
+    //       newerrors.username_errors = "Username is already taken";
+    //       invalidbool = true;
+    //       this.setState({ errors: newerrors });
+    //     }
+    //   });
+    // }
+
+    if (!passwordsMatch(this.state.password1, this.state.password2)) {
+      newerrors.has_error = true;
+      newerrors.passworderrorsbool = true;
+      newerrors.passworderrors.push("Passwords do not match");
+      invalidbool = true;
+    }
+    if (!passwordMustBeAtLeast10Char(this.state.password1)) {
+      newerrors.has_error = true;
+      newerrors.passworderrorsbool = true;
+      newerrors.passworderrors.push("Password must be at least 10 Characters");
+      invalidbool = true;
+    }
+    this.setState({ errors: newerrors });
+    return invalidbool;
+  };
+  handleSubmit(event) {
+    event.preventDefault();
+    if (!this.BusinessValidation()) {
+      alert("SUBMITTED");
+    }
+  }
+  render() {
+    return (
+      <div>
+        <Navbar isBusiness={false} />
+        <div className="container">
+          <div className="row form-padd">
+            <div className="offset-lg-3 col-lg-6">
+              <div className="card">
+                <div className="card-header">
+                  <h3>Business Signup </h3>
+                </div>
+                <div className="card-body">
+                  <SignUpForm onSubmit={this.handleSubmit}>
+                    <Input
+                      hasError={this.state.errors.owner_first_name_bool}
+                      errorMessage={this.state.errors.owner_first_name_errors}
+                      type={"text"}
+                      id={"OwnerFirstName"}
+                      placeholder={"Owner First Name"}
+                      onChange={event => {
+                        this.setState({
+                          owner_first_name: event.currentTarget.value
+                        });
+                      }}
+                    />
+                    <Input
+                      hasError={this.state.errors.owner_last_name_bool}
+                      errorMessage={this.state.errors.owner_last_name_errors}
+                      type={"text"}
+                      id={"OwnerLastName"}
+                      placeholder={"Owner Last Name"}
+                      onChange={event => {
+                        this.setState({
+                          owner_last_name: event.currentTarget.value
+                        });
+                      }}
+                    />
+                    <Input
+                      hasError={this.state.errors.email_bool}
+                      errorMessage={this.state.errors.email_errors}
+                      type={"email"}
+                      id={"Email"}
+                      placeholder={"Email"}
+                      onChange={event => {
+                        this.setState({ email: event.currentTarget.value });
+                      }}
+                    />
+                    <Input
+                      hasError={this.state.errors.business_brand_bool}
+                      errorMessage={this.state.errors.business_brand_errors}
+                      type={"text"}
+                      id={"BusinessBrand"}
+                      placeholder={"Business Name"}
+                      onChange={event => {
+                        this.setState({
+                          business_brand: event.currentTarget.value
+                        });
+                      }}
+                    />
+                    <Input
+                      hasError={this.state.errors.passworderrorsbool}
+                      type={"password"}
+                      id={"Password1"}
+                      placeholder={"Password"}
+                      onChange={event => {
+                        this.setState({
+                          password1: event.currentTarget.value
+                        });
+                      }}
+                    />
+                    <Input
+                      hasError={this.state.errors.passworderrorsbool}
+                      errorMessage={showPasswordErrors(
+                        this.state.errors.passworderrors
+                      )}
+                      type={"password"}
+                      id={"Password2"}
+                      placeholder={"Repeat Password"}
+                      onChange={event => {
+                        this.setState({
+                          password2: event.currentTarget.value
+                        });
+                      }}
+                    />
+                  </SignUpForm>
+                  <hr className="my-3" />
+                  <BusinessLogin />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}

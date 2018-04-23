@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Home } from "./AccountSummary";
 import Login from "./Login";
-import Signup from "./Signup";
+import { Signup, BusinessSignup } from "./Signup";
 import { Route, Redirect, BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
 import { getToken } from "./CookieInformation";
@@ -27,7 +27,9 @@ class App extends Component {
       <Router>
         <div>
           <Route exact path="/" component={Signup} />
+          <Route path="/business/signup" component={BusinessSignup} />
           <Route path="/login" component={Login} />
+          {/* <Route path="/business/login" component={BusinessLogin} /> */}
           <PrivateRoute path="/home" component={Home} />
           {/* <PrivateRoute path="/accountSummary" component={AccountSummary} />
           <PrivateRoute path="/requests" component={Requests} /> */}
