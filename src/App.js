@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import AccountSummary from "./AccountSummary";
+import { Home } from "./AccountSummary";
 import Login from "./Login";
 import Signup from "./Signup";
 import { Route, Redirect, BrowserRouter as Router } from "react-router-dom";
@@ -28,7 +28,9 @@ class App extends Component {
         <div>
           <Route exact path="/" component={Signup} />
           <Route path="/login" component={Login} />
-          <PrivateRoute path="/accountSummary" component={AccountSummary} />
+          <PrivateRoute path="/home" component={Home} />
+          {/* <PrivateRoute path="/accountSummary" component={AccountSummary} />
+          <PrivateRoute path="/requests" component={Requests} /> */}
           <Route path="/signup" component={Signup} />
         </div>
       </Router>
