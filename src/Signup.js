@@ -5,28 +5,53 @@ import { Redirect, Link } from "react-router-dom";
 import "./Signup.css";
 
 export const Navbar = props => {
-  return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-success">
-      <a className="navbar-brand" href="">
-        Cash It
-      </a>
-      <button
-        className="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span className="navbar-toggler-icon" />
-      </button>
-      <div className="collapse navbar-collapse" id="navbarNav">
-        <div className="navbar-nav">{props.children}</div>
-      </div>
-      <span className="navbar-text">{props.username}</span>
-    </nav>
-  );
+  if (!props.isBusiness) {
+    return (
+      <nav className="navbar navbar-expand-lg navbar-dark bg-success">
+        <a className="navbar-brand" href="">
+          Cash It
+        </a>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon" />
+        </button>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <div className="navbar-nav">{props.children}</div>
+        </div>
+        <span className="navbar-text">{props.username}</span>
+      </nav>
+    );
+  } else {
+    return (
+      <nav className="navbar navbar-expand-lg navbar-dark bg-success">
+        <a className="navbar-brand" href="">
+          Cash It Business
+        </a>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon" />
+        </button>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <div className="navbar-nav">{props.children}</div>
+        </div>
+        <span className="navbar-text">{props.username}</span>
+      </nav>
+    );
+  }
 };
 const Input = props => {
   return (
@@ -237,11 +262,11 @@ class Signup extends Component {
 
   render() {
     if (this.state.redirect) {
-      return <Redirect to="/accountSummary" />;
+      return <Redirect to="/home/accountSummary" />;
     } else {
       return (
         <div>
-          <Navbar />
+          <Navbar isBusiness={false} />
           <div className="container">
             <div className="row form-padd">
               {/* <div className="col-lg-12">

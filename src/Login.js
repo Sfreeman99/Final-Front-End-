@@ -81,11 +81,11 @@ class Login extends Component {
 
   render() {
     if (this.state.redirect) {
-      return <Redirect to="/accountSummary" />;
+      return <Redirect to="/home/accountSummary" />;
     }
     return (
       <div>
-        <Navbar />
+        <Navbar isBusiness={false} />
         <div className="container">
           <div className="offset-lg-3 col-lg-6">
             <div className="card login">
