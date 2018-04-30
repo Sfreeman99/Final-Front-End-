@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Home } from "./AccountSummary";
-import Login from "./Login";
+import { Home, BusinessHome } from "./AccountSummary";
+import { BusinessLogin, Login } from "./Login";
 import { Signup, BusinessSignup } from "./Signup";
 import { Route, Redirect, BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
@@ -27,12 +27,11 @@ class App extends Component {
       <Router>
         <div>
           <Route exact path="/" component={Signup} />
-          <Route path="/business/signup" component={BusinessSignup} />
+          <Route path="/businessSignup" component={BusinessSignup} />
           <Route path="/login" component={Login} />
-          {/* <Route path="/business/login" component={BusinessLogin} /> */}
+          <Route path="/businessLogin" component={BusinessLogin} />
           <PrivateRoute path="/home" component={Home} />
-          {/* <PrivateRoute path="/accountSummary" component={AccountSummary} />
-          <PrivateRoute path="/requests" component={Requests} /> */}
+          {/* <PrivateRoute path="/business" component={BusinessHome} /> */}
           <Route path="/signup" component={Signup} />
         </div>
       </Router>

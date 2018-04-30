@@ -83,7 +83,7 @@ const BusinessLogin = () => {
   return (
     <div>
       <p className="lead">
-        <Link id="login" to="/login" className="btn btn-sm btn-default">
+        <Link id="login" to="/businessLogin" className="btn btn-sm btn-default">
           Login
         </Link>{" "}
         For existing business.
@@ -97,7 +97,7 @@ const BusinessSignUp = () => {
       <p className="lead">
         <Link
           id="login"
-          to="/business/signup"
+          to="/businessSignup"
           className="btn btn-sm btn-default"
         >
           Click Here
@@ -378,7 +378,7 @@ export class Signup extends Component {
                     </SignUpForm>
                     <hr className="my-3" />
                     <Login />
-                    <BusinessSignUp />
+                    {/* <BusinessSignUp /> */}
                   </div>
                 </div>
               </div>
@@ -394,6 +394,7 @@ export class BusinessSignup extends Component {
   constructor() {
     super();
     this.state = {
+      redirect: false,
       owner_first_name: "",
       owner_last_name: "",
       business_brand: "",
@@ -417,7 +418,11 @@ export class BusinessSignup extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.BusinessValidation = this.BusinessValidation.bind(this);
   }
-
+  componentDidMount() {
+    if (getToken()) {
+      this.setState({ redirect: true });
+    }
+  }
   BusinessValidation = () => {
     var invalidbool = false;
     var newerrors = {
@@ -485,102 +490,125 @@ export class BusinessSignup extends Component {
   handleSubmit(event) {
     event.preventDefault();
     if (!this.BusinessValidation()) {
-      alert("SUBMITTED");
+      fetch("http://localhost:8080/business/signup", {
+        method: "post",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          owner_first_name: this.state.owner_first_name,
+          owner_last_name: this.state.owner_last_name,
+          business_brand: this.state.business_brand,
+          password: this.state.password1
+        })
+      })
+        .then(response => {
+          return response.text();
+        })
+        .then(data => {
+          bake_cookie("BUser", data);
+          this.setState({ redirect: true });
+        });
     }
   }
   render() {
-    return (
-      <div>
-        <Navbar isBusiness={false} />
-        <div className="container">
-          <div className="row form-padd">
-            <div className="offset-lg-3 col-lg-6">
-              <div className="card">
-                <div className="card-header">
-                  <h3>Business Signup </h3>
-                </div>
-                <div className="card-body">
-                  <SignUpForm onSubmit={this.handleSubmit}>
-                    <Input
-                      hasError={this.state.errors.owner_first_name_bool}
-                      errorMessage={this.state.errors.owner_first_name_errors}
-                      type={"text"}
-                      id={"OwnerFirstName"}
-                      placeholder={"Owner First Name"}
-                      onChange={event => {
-                        this.setState({
-                          owner_first_name: event.currentTarget.value
-                        });
-                      }}
-                    />
-                    <Input
-                      hasError={this.state.errors.owner_last_name_bool}
-                      errorMessage={this.state.errors.owner_last_name_errors}
-                      type={"text"}
-                      id={"OwnerLastName"}
-                      placeholder={"Owner Last Name"}
-                      onChange={event => {
-                        this.setState({
-                          owner_last_name: event.currentTarget.value
-                        });
-                      }}
-                    />
-                    <Input
-                      hasError={this.state.errors.email_bool}
-                      errorMessage={this.state.errors.email_errors}
-                      type={"email"}
-                      id={"Email"}
-                      placeholder={"Email"}
-                      onChange={event => {
-                        this.setState({ email: event.currentTarget.value });
-                      }}
-                    />
-                    <Input
-                      hasError={this.state.errors.business_brand_bool}
-                      errorMessage={this.state.errors.business_brand_errors}
-                      type={"text"}
-                      id={"BusinessBrand"}
-                      placeholder={"Business Name"}
-                      onChange={event => {
-                        this.setState({
-                          business_brand: event.currentTarget.value
-                        });
-                      }}
-                    />
-                    <Input
-                      hasError={this.state.errors.passworderrorsbool}
-                      type={"password"}
-                      id={"Password1"}
-                      placeholder={"Password"}
-                      onChange={event => {
-                        this.setState({
-                          password1: event.currentTarget.value
-                        });
-                      }}
-                    />
-                    <Input
-                      hasError={this.state.errors.passworderrorsbool}
-                      errorMessage={showPasswordErrors(
-                        this.state.errors.passworderrors
-                      )}
-                      type={"password"}
-                      id={"Password2"}
-                      placeholder={"Repeat Password"}
-                      onChange={event => {
-                        this.setState({
-                          password2: event.currentTarget.value
-                        });
-                      }}
-                    />
-                  </SignUpForm>
-                  <hr className="my-3" />
-                  <BusinessLogin />
+    if (this.state.redirect) {
+      return <Redirect to="/business/summary" />;
+    } else {
+      return (
+        <div>
+          <Navbar isBusiness={true} />
+          <div className="container">
+            <div className="row form-padd">
+              <div className="offset-lg-3 col-lg-6">
+                <div className="card">
+                  <div className="card-header">
+                    <h3>Business Signup </h3>
+                  </div>
+                  <div className="card-body">
+                    <SignUpForm onSubmit={this.handleSubmit}>
+                      <Input
+                        hasError={this.state.errors.owner_first_name_bool}
+                        errorMessage={this.state.errors.owner_first_name_errors}
+                        type={"text"}
+                        id={"OwnerFirstName"}
+                        placeholder={"Owner First Name"}
+                        onChange={event => {
+                          this.setState({
+                            owner_first_name: event.currentTarget.value
+                          });
+                        }}
+                      />
+                      <Input
+                        hasError={this.state.errors.owner_last_name_bool}
+                        errorMessage={this.state.errors.owner_last_name_errors}
+                        type={"text"}
+                        id={"OwnerLastName"}
+                        placeholder={"Owner Last Name"}
+                        onChange={event => {
+                          this.setState({
+                            owner_last_name: event.currentTarget.value
+                          });
+                        }}
+                      />
+                      <Input
+                        hasError={this.state.errors.email_bool}
+                        errorMessage={this.state.errors.email_errors}
+                        type={"email"}
+                        id={"Email"}
+                        placeholder={"Email"}
+                        onChange={event => {
+                          this.setState({ email: event.currentTarget.value });
+                        }}
+                      />
+                      <Input
+                        hasError={this.state.errors.business_brand_bool}
+                        errorMessage={this.state.errors.business_brand_errors}
+                        type={"text"}
+                        id={"BusinessBrand"}
+                        placeholder={"Business Name"}
+                        onChange={event => {
+                          this.setState({
+                            business_brand: event.currentTarget.value
+                          });
+                        }}
+                      />
+                      <Input
+                        hasError={this.state.errors.passworderrorsbool}
+                        type={"password"}
+                        id={"Password1"}
+                        placeholder={"Password"}
+                        onChange={event => {
+                          this.setState({
+                            password1: event.currentTarget.value
+                          });
+                        }}
+                      />
+                      <Input
+                        hasError={this.state.errors.passworderrorsbool}
+                        errorMessage={showPasswordErrors(
+                          this.state.errors.passworderrors
+                        )}
+                        type={"password"}
+                        id={"Password2"}
+                        placeholder={"Repeat Password"}
+                        onChange={event => {
+                          this.setState({
+                            password2: event.currentTarget.value
+                          });
+                        }}
+                      />
+                    </SignUpForm>
+                    <hr className="my-3" />
+                    <BusinessLogin />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    }
   }
 }
